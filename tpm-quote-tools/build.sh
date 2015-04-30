@@ -16,7 +16,7 @@ install_tpm_quote_tools() {
   if [ -n "$TPM_QUOTE_TOOLS_FILE" ] && [ -f "$TPM_QUOTE_TOOLS_FILE" ]; then
     rm -rf $TPM_QUOTE_TOOLS
     tar fxz $TPM_QUOTE_TOOLS_FILE
-	(cd $TPM_QUOTE_TOOLS &&  ./configure --prefix=$PREFIX --with-openssl=$PREFIX && make && make install)
+	(cd $TPM_QUOTE_TOOLS &&  ./configure --prefix=$PREFIX && make && make install)
   fi
 }
 
