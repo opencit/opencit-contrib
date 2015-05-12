@@ -1,0 +1,9 @@
+--- hex2bin-master/Makefile     2015-04-30 14:52:12.979503194 -0400
++++ hex2bin-master-patch/Makefile       2015-04-30 14:52:08.942503501 -0400
+@@ -6,5 +6,6 @@
+
+ install:
+ 		chmod +x hex2bin
+-		cp hex2bin /usr/local/bin
++		mkdir -p $(PREFIX)/bin
++		cp hex2bin $(PREFIX)/bin
