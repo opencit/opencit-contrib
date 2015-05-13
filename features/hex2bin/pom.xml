@@ -3,6 +3,7 @@
 
   <groupId>com.github.hex2bin</groupId>
   <artifactId>hex2bin-dist</artifactId>
+  <version>1.0</version>
     <packaging>pom</packaging>
 
 <parent>
