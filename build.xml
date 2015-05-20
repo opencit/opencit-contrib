@@ -22,6 +22,14 @@
 	</target>
 	
 	<target name="ready" depends="init">
+
+		<!-- the build.targets file is generated from a template, replacing LINUX_TARGET using environment variable or default value of 'generic' -->
+		<copy file="build.targets.template" tofile="build.targets"/>
+		<condition property="env.LINUX_TARGET" value="generic">
+			<not><isset property="env.LINUX_TARGET"/></not>
+		</condition>
+		<replace file="build.targets" token="${LINUX_TARGET}" value="${env.LINUX_TARGET}"/>
+
 		<!-- the root pom -->
 		<exec executable="${cmd.maven}" resultproperty="mavenExitInstallPom">
 			<arg value="-DskipTests=true"/>
@@ -57,7 +65,6 @@
 	<target name="clean" depends="init">
 		<!-- clean all projects -->
 		<exec executable="${cmd.maven}" resultproperty="mavenExitClean">
-			<arg value="-DskipTests=true"/>
 			<arg value="clean"/>
 		</exec>
 		<fail message="Failed to clean project" status="${mavenExitClean}">
@@ -73,8 +80,8 @@
 	</target>
 	
 	<target name="build" depends="init">
-		<!-- the root pom and all projects -->
-		<exec executable="${cmd.maven}" resultproperty="mavenExitInstall">
+		<!-- the feature projects -->
+		<exec executable="${cmd.maven}"  dir="features" resultproperty="mavenExitInstall">
 			<arg value="-DskipTests=true"/>
 			<arg value="install"/>
 		</exec>
