@@ -25,9 +25,6 @@
 
 #include "tpm_tspi.h"
 #include "tpm_utils.h"
-//#include <openssl/bio.h>
-//#include <openssl/ssl.h>
-//#include <openssl/err.h>
 
 // this macro assumes the following declarations are in scope:
 // 1. TSS_HCONTEXT hContext 
