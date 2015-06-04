@@ -1,5 +1,5 @@
 /*
- * tpm_sealkey - binds an AES key using an existing TPM key
+ * tpm_bindaeskey - binds an AES key using an existing TPM key
  * 
  * Copyright (C) 2015 Intel Corporation. All rights reserved.
  *
