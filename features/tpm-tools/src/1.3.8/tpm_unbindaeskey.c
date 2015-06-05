@@ -1,5 +1,5 @@
 /*
- * tpm_sealkey - binds an AES key using an existing TPM key
+ * tpm_unbindaeskey - unbinds an AES key using an existing TPM key
  * 
  * Copyright (C) 2015 Intel Corporation. All rights reserved.
  *
@@ -104,7 +104,7 @@ static void help(const char* aCmd)
 	logCmdOption("-o, --outfile",
 		     _("Output file to store the decrypted AES key"));
 	logCmdOption("-q, --keypassword",
-		     _("Password for using the TPM signing key"));
+		     _("Password for using the TPM binding key"));
 	logCmdOption("-Q, --keypasswordsha1",
 		     _("Password for using the TPM key is provided as SHA-1 output, use as-is"));
 	logCmdOption("-t, --env",
