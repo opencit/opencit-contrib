@@ -1,0 +1,2 @@
+The presence of this text file prevents the mtwilson-node-tools-zip from trying to create and attach a zip file for itself.
+So the profile will only be activated for inheriting poms that do NOT have this text file in their project directories.

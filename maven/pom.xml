@@ -13,5 +13,6 @@
 	
     <modules>
     <module>mtwilson-maven-build-sh-zip</module>
+	<module>mtwilson-maven-package-zip</module>
     </modules>
 </project>
