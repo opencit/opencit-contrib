@@ -16,6 +16,14 @@
   during the build and it will be zipped
   </description>
   
+<!--
+The profile with activation.file.missing = ${basedir}/lock.mtwilson-maven-package-zip.txt causes
+Maven to NOT try to create a zip file out of this parent pom itself.  The mentioned lock file is in
+this project and will cause Maven to not run the maven-antrun-plugin. 
+But for all projects that inherit from this POM as a parent POM,  they will not have the lock file
+and a zip file will be generated for them.
+-->
+
     <profiles>
         <profile>
             <activation>
