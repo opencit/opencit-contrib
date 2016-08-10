@@ -103,7 +103,7 @@ static inline TSS_RESULT tpmTakeOwnership(TSS_HTPM a_hTpm, TSS_HKEY a_hSrk)
 int main(int argc, char **argv)
 {
 
-	int tpm_len, srk_len;
+	int tpm_len = 0, srk_len = 0;
 	TSS_HTPM hTpm;
 	TSS_HKEY hSrk;
 	TSS_FLAG fSrkAttrs;
@@ -173,6 +173,10 @@ int main(int argc, char **argv)
 		if (policySetSecret(hTpmPolicy, tpm_len, well_known_secret) != TSS_SUCCESS)
 			goto out_obj_close;
 	} else if( decodeHexPassword ) {
+				if(ownerpass == NULL) {
+					logMsg(_("NULL TPM owner secret\n"));
+					goto out_close;
+				}
 				if( hex2bytea(ownerpass, &pTpmPasswd, &iTpmPasswdLen) != 0 ) {
 					logError(_("Invalid hex TPM owner secret\n"));
 					goto out_close;
@@ -182,7 +186,7 @@ int main(int argc, char **argv)
 					goto out_close;
 	} else {
 	
-			if( tpm_len < 0 )
+			if( tpm_len <= 0 )
 				tpm_len = strlen(ownerpass);
 		if (policySetSecret(hTpmPolicy, tpm_len, (BYTE *)ownerpass) != TSS_SUCCESS)
 			goto out_close;
@@ -214,6 +218,10 @@ int main(int argc, char **argv)
 			goto out_obj_close;
 	} else {
 			if( decodeHexPassword ) {
+				if(srkpass == NULL) {
+					logMsg(_("NULL SRK secret\n"));
+					goto out_close;
+				}
 				if( hex2bytea(srkpass, &pSrkPasswd, &iSrkPasswdLen) != 0 ) {
 					logError(_("Invalid hex SRK secret\n"));
 					goto out_close;
@@ -224,7 +232,7 @@ int main(int argc, char **argv)
 			}
 			else {
 			
-			if( srk_len < 0 )
+			if( srk_len <= 0 )
 				srk_len = strlen(srkpass);
 		if (policySetSecret(hSrkPolicy, srk_len, (BYTE *)srkpass) != TSS_SUCCESS)
 			goto out_obj_close;

@@ -288,7 +288,7 @@ int hex2bytea( const char *a_pszHex, BYTE **a_pDecoded, int *a_iDecodedLen ) {
 			*a_iDecodedLen = 0;			
 			return 2; // invalid hex digit
 		}
-		pDecoded[i] = iByte & 0xFF;
+		if(pDecoded) { pDecoded[i] = iByte & 0xFF; }
 	}
 	*a_pDecoded = pDecoded;
 	*a_iDecodedLen = iDecodedLen;

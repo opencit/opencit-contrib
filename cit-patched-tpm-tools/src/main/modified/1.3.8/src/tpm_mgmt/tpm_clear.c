@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 
 	char *szTpmPasswd = NULL;
 	BYTE* pTpmPasswd = NULL;
-	int pswd_len;
+	int pswd_len = 0;
 	TSS_HTPM hTpm;
 	TSS_HPOLICY hTpmPolicy;
 	int iRc = -1;
@@ -129,7 +129,6 @@ int main(int argc, char **argv)
 			pswd_len = sizeof(well_known);
 		}else{
 			if (askOwnerPass) {
-
 				szTpmPasswd = GETPASSWD(_("Enter owner password: "), &pswd_len, FALSE);
 				if (!szTpmPasswd) {
 					logMsg(_("Failed to get password\n"));
@@ -137,7 +136,7 @@ int main(int argc, char **argv)
 				}
 				ownerpass = szTpmPasswd;
 			}
-				
+			
 			if (ownerpass && !askOwnerPass && useEnvironment) {
 				ownerpassEnv = ownerpass;
 				ownerpass = getenv(ownerpassEnv);
@@ -158,6 +157,10 @@ int main(int argc, char **argv)
 				goto out_close;
 		}
 		else if( decodeHexPassword ) {
+				if(ownerpass == NULL) {
+					logMsg(_("NULL TPM owner secret\n"));
+					goto out_close;
+				}
 				if( hex2bytea(ownerpass, &pTpmPasswd, &pswd_len) != 0 ) {
 					logMsg(_("Invalid hex TPM owner secret\n"));
 					goto out_close;
@@ -167,7 +170,7 @@ int main(int argc, char **argv)
 					goto out_close;
 		}
 		else {
-			if( pswd_len < 0 )
+			if( pswd_len <= 0 )
 				pswd_len = strlen(ownerpass);
 			if (policySetSecret(hTpmPolicy, pswd_len, (BYTE *)ownerpass) != TSS_SUCCESS)
 				goto out_close;
