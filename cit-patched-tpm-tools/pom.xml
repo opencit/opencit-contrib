@@ -80,6 +80,8 @@
                                 <copy todir="${project.build.directory}/${tpm.tools.name}-patched" failonerror="true" overwrite="true">
                                     <fileset dir="src/main/modified/1.3.8"/>
                                 </copy>
+                                <chmod file="${project.build.directory}/${tpm.tools.name}/configure" perm="755"/>
+                                <chmod file="${project.build.directory}/${tpm.tools.name}-patched/configure" perm="755"/>
                             </target>
                         </configuration>
                     </execution>
@@ -145,7 +147,6 @@
                                 <copy todir="${project.build.directory}/${makeself.name}/${tpm.tools.name}-patched" failonerror="true" overwrite="true">
                                     <fileset dir="${project.build.directory}/${tpm.tools.name}-patched"/>
                                 </copy>
-                                <chmod file="${project.build.directory}/${makeself.name}/${tpm.tools.name}-patched/configure" perm="755"/>
                             </target>
                         </configuration>
                     </execution>
@@ -153,7 +154,5 @@
             </plugin>
         </plugins>
     </build>
-	
-	
     
 </project>
