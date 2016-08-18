@@ -170,7 +170,11 @@ int main(int argc, char **argv)
 					goto out_close;
 		}
 		else {
-			if( pswd_len <= 0 )
+                        if(ownerpass == NULL) {
+                                logMsg(_("NULL TPM owner secret\n"));
+                                goto out_close;
+                        }
+			if( pswd_len <= 0 )                            
 				pswd_len = strlen(ownerpass);
 			if (policySetSecret(hTpmPolicy, pswd_len, (BYTE *)ownerpass) != TSS_SUCCESS)
 				goto out_close;
