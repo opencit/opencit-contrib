@@ -281,17 +281,49 @@ int hex2bytea( const char *a_pszHex, BYTE **a_pDecoded, int *a_iDecodedLen ) {
 	}
 	iDecodedLen = iHexLen / 2;
 	pDecoded = malloc( sizeof(char) * iDecodedLen );
-	for(i=0; i<iHexLen/2; i++) {
-		if( sscanf(a_pszHex+(i*2), "%2x", &iByte) != 1 ) {
+   	int hex1;
+	int hex2;
+	for(i=0; i<iHexLen-1; i=i+2) {
+
+		hex1 = hex2int(a_pszHex[i]);
+		hex2 = hex2int(a_pszHex[i+1]);
+
+		if(hex1 == -1 || hex2 == -1) {
 			free(pDecoded);
 			*a_pDecoded = NULL;
-			*a_iDecodedLen = 0;			
+			*a_iDecodedLen = 0;
 			return 2; // invalid hex digit
 		}
+            
+		iByte = (hex1*16) + hex2;
+		//printf("iByte: %d\n", iByte);
+
 		if(pDecoded) { pDecoded[i] = iByte & 0xFF; }
 	}
 	*a_pDecoded = pDecoded;
 	*a_iDecodedLen = iDecodedLen;
 	return 0;
 }
+
+int hex2int(const char c)
+{
+    int result = -1;
+
+    if(c >= '0' && c<= '9') {
+  	result = (c - '0');
+	//printf("0 to 9 value: %d\n", result);
+    }
+    else {
+	int temp = toupper(c) - 'A' + 10;
+	if(temp>=10 && temp<=15) {
+	   result = temp;
+	   //printf("A to F value: %d\n", result);
+	}
+    }
+
+    return result;
+}
+
+
+
 

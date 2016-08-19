@@ -184,14 +184,17 @@ int main(int argc, char **argv)
 				if( Tspi_Policy_SetSecret(hTpmPolicy, TSS_SECRET_MODE_PLAIN, iTpmPasswdLen,
 							pTpmPasswd) != TSS_SUCCESS)
 					goto out_close;
-	} else {
-	
-			if( tpm_len <= 0 )
-				tpm_len = strlen(ownerpass);
-		if (policySetSecret(hTpmPolicy, tpm_len, (BYTE *)ownerpass) != TSS_SUCCESS)
-			goto out_close;
-			
-	}
+        } else {
+            if (ownerpass == NULL) {
+                logMsg(_("NULL TPM owner secret\n"));
+                goto out_close;
+            }
+            if (tpm_len <= 0)
+                tpm_len = strlen(ownerpass);
+            if (policySetSecret(hTpmPolicy, tpm_len, (BYTE *) ownerpass) != TSS_SUCCESS)
+                goto out_close;
+
+        }
 
 	fSrkAttrs = TSS_KEY_TSP_SRK | TSS_KEY_AUTHORIZATION;
 
@@ -231,7 +234,10 @@ int main(int argc, char **argv)
 					goto out_close;
 			}
 			else {
-			
+			if(srkpass == NULL) {
+                                logMsg(_("NULL SRK secret\n"));
+                                goto out_close;
+                        }
 			if( srk_len <= 0 )
 				srk_len = strlen(srkpass);
 		if (policySetSecret(hSrkPolicy, srk_len, (BYTE *)srkpass) != TSS_SUCCESS)
