@@ -24,11 +24,15 @@
 #include <stdlib.h>
 #include <trousers/tss.h>
 #include <trousers/trousers.h>
+#include <ctype.h>
 
 #include "tpm_tspi.h"
 #include "tpm_utils.h"
 
 BOOL useUnicode = FALSE;
+
+int hex2int(const char c);
+
 
 static const struct option sGenLongOpts[] = {
 	{ "help", no_argument, NULL, 'h' },
