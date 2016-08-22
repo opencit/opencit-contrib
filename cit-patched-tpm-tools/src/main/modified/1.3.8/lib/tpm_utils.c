@@ -266,6 +266,28 @@ out:
 	return pszReply;
 }
 
+
+/*
+ * Input: hexadecimal character in the range 0..9 or A..F case-insensitive
+ * Output: decimal value of input in the range 0..15 
+ *         or -1 if the input was not a valid hexadecimal character
+ */
+int hex2int(const char c)
+{
+    if(c >= '0' && c<= '9') {
+  	return c - '0';
+    }
+    else if( c >= 'A' && c <= 'F' ) {
+        return c - 'A' + 10;
+    }
+    else if( c >= 'a' && c <= 'f' ) {
+        return c - 'a' + 10;
+    }
+    else {
+        return -1;
+    }
+}
+
 /*
  * You must free the memory allocated to a_pDecoded when you are done with it.
  * Returns 0 for success, non-zero for failure.
@@ -304,26 +326,6 @@ int hex2bytea( const char *a_pszHex, BYTE **a_pDecoded, int *a_iDecodedLen ) {
 	*a_iDecodedLen = iDecodedLen;
 	return 0;
 }
-
-int hex2int(const char c)
-{
-    int result = -1;
-
-    if(c >= '0' && c<= '9') {
-  	result = (c - '0');
-	//printf("0 to 9 value: %d\n", result);
-    }
-    else {
-	int temp = toupper(c) - 'A' + 10;
-	if(temp>=10 && temp<=15) {
-	   result = temp;
-	   //printf("A to F value: %d\n", result);
-	}
-    }
-
-    return result;
-}
-
 
 
 
