@@ -119,5 +119,6 @@ if [ $? -ne 0 ]; then echo_failure "Failed to install prerequisites through pack
 ##ldconfig
 ##cd ..
 #do tpm-tools
+chmod 777 tpm-tools-1.3.8-patched/configure
 cd tpm-tools-1.3.8-patched && LDFLAGS="-L/usr/local/lib" ./configure --prefix=/usr/local && make && make install
 
