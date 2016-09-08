@@ -16,6 +16,9 @@
 ## M4sh Initialization. ##
 ## -------------------- ##
 
+CFLAGS="${CFLAGS} -fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
+LDFLAGS="${LDFLAGS} -z noexecstack -z relro -z now -pie"
+
 # Be more Bourne compatible
 DUALCASE=1; export DUALCASE # for MKS sh
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then :

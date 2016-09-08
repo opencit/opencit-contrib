@@ -296,40 +296,42 @@ int hex2int(const char c)
  * You must free the memory allocated to a_pDecoded when you are done with it.
  * Returns 0 for success, non-zero for failure.
  */
+
 int hex2bytea( const char *a_pszHex, BYTE **a_pDecoded, int *a_iDecodedLen ) {
-	BYTE *pDecoded;
-	int iDecodedLen, iByte, i;
-	int iHexLen = strlen(a_pszHex);
-	if( iHexLen % 2 != 0 ) {
-		*a_pDecoded = NULL;
-		*a_iDecodedLen = 0;
-		return 1; // invalid length for hex
-	}
-	iDecodedLen = iHexLen / 2;
-	pDecoded = malloc( sizeof(char) * iDecodedLen );
-   	int hex1;
-	int hex2;
-	for(i=0; i<iHexLen-1; i=i+2) {
+        BYTE *pDecoded;
+        int iDecodedLen, iByte, i;
+        int iHexLen = strlen(a_pszHex);
+        if( iHexLen % 2 != 0 ) {
+                *a_pDecoded = NULL;
+                *a_iDecodedLen = 0;
+                return 1; // invalid length for hex
+        }
+        iDecodedLen = iHexLen / 2;
+        pDecoded = malloc( sizeof(char) * iDecodedLen );
+        int hex1;
+        int hex2;
+        int pDecoded_index=0;
+        for(i=0; i<iHexLen-1; i=i+2) {
 
-		hex1 = hex2int(a_pszHex[i]);
-		hex2 = hex2int(a_pszHex[i+1]);
+                hex1 = hex2int(a_pszHex[i]);
+                hex2 = hex2int(a_pszHex[i+1]);
 
-		if(hex1 == -1 || hex2 == -1) {
-			free(pDecoded);
-			*a_pDecoded = NULL;
-			*a_iDecodedLen = 0;
-			return 2; // invalid hex digit
-		}
-            
-		iByte = (hex1*16) + hex2;
-		//printf("iByte: %d\n", iByte);
+                if(hex1 == -1 || hex2 == -1) {
+                        free(pDecoded);
+                        *a_pDecoded = NULL;
+                        *a_iDecodedLen = 0;
+                        return 2; // invalid hex digit
+                }
 
-		if(pDecoded) { pDecoded[i] = iByte & 0xFF; }
-	}
-	*a_pDecoded = pDecoded;
-	*a_iDecodedLen = iDecodedLen;
-	return 0;
+                iByte = (hex1*16) + hex2;
+
+                pDecoded[pDecoded_index++] = iByte & 0xFF;
+        }
+        *a_pDecoded = pDecoded;
+        *a_iDecodedLen = iDecodedLen;
+        return 0;
 }
+
 
 
 
