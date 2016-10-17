@@ -1,5 +1,7 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/niarl}
+export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
+export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 
 install_niarl_tpm_module() {
@@ -12,7 +14,7 @@ install_niarl_tpm_module() {
   #g++ -g -I$PREFIX/include -L$PREFIX/lib -o"NIARL_TPM_Module" NIARL_TPM_ModuleV2.o NIARL_Util_ByteBlob.o NIARL_Util_Mask.o main.o -ltspi
   #mkdir -p $PREFIX/bin
   #cp NIARL_TPM_Module $PREFIX/bin
-  CFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" make && make install
+  CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" PREFIX=$PREFIX make && make install
 }
 
 ( cd c++ && install_niarl_tpm_module )

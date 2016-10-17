@@ -1,5 +1,7 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmtools}
+export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
+export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 TPM_TOOLS_URL=http://downloads.sourceforge.net/project/trousers/tpm-tools/1.3.8/tpm-tools-1.3.8.tar.gz
 TPM_TOOLS=tpm-tools-1.3.8
@@ -22,7 +24,7 @@ install_tpm_tools() {
 	# note: /usr/local/ssl directory specified in our openssl build script
     #(cd $TPM_TOOLS && LDFLAGS="-L/usr/local/lib -L/usr/local/ssl/lib" CFLAGS="-I/usr/local/ssl/include"  ./configure --prefix=/usr/local && make && make install)
 	# LD_PRELOAD="/opt/dcgcontrib/lib/libcrypto.so.1.0.0" LDFLAGS="-L$PREFIX/lib" CFLAGS="-I$PREFIX/include" 
-	(cd $TPM_TOOLS && CFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" ./configure --prefix=$PREFIX --with-openssl=$PREFIX && make && make install)
+	(cd $TPM_TOOLS && CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" ./configure --prefix=$PREFIX --with-openssl=$OPENSSL && make && make install)
   fi
 }
 
@@ -35,7 +37,7 @@ install_tpm_tools_contrib() {
   #gcc -g -O0 -L$PREFIX/lib -DLOCALEDIR='"/usr/share/locale"' -I$PREFIX/include -Itpm-tools-1.3.8 -Itpm-tools-1.3.8/include -o tpm_signdata  tpm_signdata.c tpm-tools-1.3.8/lib/tpm_tspi.c tpm-tools-1.3.8/lib/tpm_utils.c tpm-tools-1.3.8/lib/tpm_log.c hex2bytea.c -lcrypto -ltspi 
   #mkdir -p $PREFIX/bin
   #cp tpm_createkey tpm_bindaeskey tpm_unbindaeskey tpm_signdata $PREFIX/bin
-  ( cd 1.3.8 && CFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" TPM_TOOLS_SRC="../tpm-tools-1.3.8" make && make install )
+  ( cd 1.3.8 && CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" TPM_TOOLS_SRC="../tpm-tools-1.3.8" PREFIX=$PREFIX make && make install )
 }
 
 

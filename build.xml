@@ -13,10 +13,11 @@
 	</target>
 	
 	<target name="init">
-		<condition property="cmd.maven" value="mvn.bat">
+		<property environment="env"/>
+		<condition property="cmd.maven" value="mvn.cmd">
 			<os family="windows"/>
 		</condition>
-		<condition property="cmd.maven" value="mvn">
+		<condition property="cmd.maven" value="${env.MAVEN_HOME}/bin/mvn">
 			<os family="unix"/>
 		</condition>
 	</target>

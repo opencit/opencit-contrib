@@ -1,7 +1,7 @@
 #!/bin/bash
 # PREFIX must be an absolute path
 # PREFIX must be exported for "make" subshell
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/hex2bin}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 VERSION=1.0
 HEX2BIN_URL=https://github.com/jbuhacoff/hex2bin/archive/master.zip

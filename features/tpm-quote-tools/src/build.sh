@@ -1,5 +1,7 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmquote}
+export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
+export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 TPM_QUOTE_TOOLS_URL=http://downloads.sourceforge.net/project/tpmquotetools/1.0.2/tpm-quote-tools-1.0.2.tar.gz
 TPM_QUOTE_TOOLS=tpm-quote-tools-1.0.2
@@ -18,7 +20,7 @@ install_tpm_quote_tools() {
   if [ -n "$TPM_QUOTE_TOOLS_FILE" ] && [ -f "$TPM_QUOTE_TOOLS_FILE" ]; then
     rm -rf $TPM_QUOTE_TOOLS
     tar fxz $TPM_QUOTE_TOOLS_FILE
-	(cd $TPM_QUOTE_TOOLS &&  CFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" ./configure --prefix=$PREFIX && make && make install)
+	(cd $TPM_QUOTE_TOOLS &&  CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" ./configure --prefix=$PREFIX && make && make install)
   fi
 }
 

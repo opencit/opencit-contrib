@@ -1,5 +1,5 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/openssl}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 OPENSSL_URL=http://openssl.org/source/openssl-1.0.2a.tar.gz
 OPENSSL=openssl-1.0.2a
@@ -20,7 +20,7 @@ install_openssl() {
     tar fxz $OPENSSL_FILE
 	# options "no-idea no-mdc2 no-rc5" disable support for these patented algorithms
 	# --enable-cross-compile
-    (cd $OPENSSL && ./config --shared --prefix=$PREFIX no-idea no-mdc2 no-rc5 && make && make install)
+    (cd $OPENSSL && ./config --shared --prefix=$PREFIX --openssldir=$PREFIX no-idea no-mdc2 no-rc5 && make && make install)
     #if [ -d /etc/ld.so.conf.d ]; then
       #echo /usr/local/ssl/lib/ > /etc/ld.so.conf.d/openssl.conf
 	  #echo $PREFIX/lib > /etc/ld.so.conf.d/openssl.conf

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # prereqs: openssl, trousers
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/openssl}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 
 TROUSERS_OPENSSL_TPM_ENGINE_URL=http://downloads.sourceforge.net/project/trousers/OpenSSL%20TPM%20Engine/0.4.2/openssl_tpm_engine-0.4.2.tar.gz

@@ -1,5 +1,7 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmquote}
+export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
+export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 
 
@@ -10,7 +12,7 @@ install_tpm_agent_tools() {
   #gcc -I$PREFIX/include -L$PREFIX/lib -o getcert01 getcert01.c -ltspi
   #mkdir -p $PREFIX
   #cp aikquote aikqverify getcert getcert01 $PREFIX/bin
-  CFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" make && make install
+  CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" make && make install
 }
 
 install_tpm_agent_tools

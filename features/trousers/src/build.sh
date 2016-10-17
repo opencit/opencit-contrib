@@ -1,5 +1,6 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-${HOME:-/tmp}/local}
+export PREFIX=${OPENSSL:-/opt/mtwilson/share/trousers}
+export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 TROUSERS_URL=http://downloads.sourceforge.net/project/trousers/trousers/0.3.13/trousers-0.3.13.tar.gz
 TROUSERS=trousers-0.3.13
@@ -24,7 +25,7 @@ install_trousers() {
 	# specifying --with-openssl=$PREFIX is important here in order to be able to compile tpm-tools later;
 	# if we don't specify it then we will get errors like this when compiling tpm-tools:
 	#	/opt/dcgcontrib/lib/libtspi.so: undefined reference to `EVP_EncryptUpdate@OPENSSL_1.0.0'
-	(cd $TROUSERS && ./configure --prefix=$PREFIX --with-openssl=$PREFIX && make && make install)
+	(cd $TROUSERS && ./configure --prefix=$PREFIX --with-openssl=$OPENSSL && make && make install)
     #if [ -d /etc/ld.so.conf.d ]; then
       #echo $PREFIX/lib > /etc/ld.so.conf.d/trousers.conf
     #fi
