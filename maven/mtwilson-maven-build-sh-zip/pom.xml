@@ -17,9 +17,10 @@ The build.sh script should accept a PREFIX variable and provide
 a reasonable default (dist)  if it's not defined. 
 
 To build this "recipe" pom, use:
-mvn install -DskipAntBuild
+mvn install
 
-TO skip the ant portion of the build, which will fail since there is no source to build here.
+It looks for src/build.sh and if not present then it skips
+the related build steps.
 
 </description>
 	
@@ -136,7 +137,11 @@ TO skip the ant portion of the build, which will fail since there is no source t
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target unless="skipAntBuild">
+                                    <target xmlns:ac="antlib:net.sf.antcontrib">
+									<available property="feature.build.sh" file="${basedir}/src/build.sh" type="file"/>
+									<ac:if>
+										<equals arg1="${feature.build.sh}" arg2="true"/>
+                                    <then>
 										<!-- distribution target defined by env LINUX_TARGET or default value 'generic' (if LINUX_TARGET is already defined in env, this property task has no effect) -->
 										<property name="env.LINUX_TARGET" value="generic"/> 
 
@@ -149,6 +154,7 @@ TO skip the ant portion of the build, which will fail since there is no source t
 -->
 										<!-- extract all zip files (dependencies) into dist directory;
 											these could be libraries required for linking , for example, copied by copy-dist-deps above -->
+										<delete file="${project.build.directory}/dist/builder/x" quiet="true"/>
 										<apply executable="unzip" dir="${project.build.directory}/dist">
 											<srcfile/>
 											<fileset dir="${project.build.directory}/dist-deps" includes="*.zip"/>
@@ -160,7 +166,7 @@ TO skip the ant portion of the build, which will fail since there is no source t
 										</apply>
 
 										<!--  the touch command ensures there's at least one entry in the dist.contents fileset (if the fileset is empty, the delete command later will delete everything in dist, including what we built) -->
-										<touch file="${project.build.directory}/dist/tmp/x" mkdirs="true"/>
+										<touch file="${project.build.directory}/dist/builder/x" mkdirs="true"/>
 										<!-- list all files in dist directory ,  the touch command ensures there's at least one (without it, the delete command later will delete everything from maven -repo-->
 										<fileset id="dist.contents" dir="${project.build.directory}/dist"/>
 										<pathconvert pathsep="," property="dist.contents.csv" refid="dist.contents">
@@ -178,7 +184,7 @@ TO skip the ant portion of the build, which will fail since there is no source t
 -->
                                         <chmod perm="+x" file="${project.build.directory}/build.sh"/>
                                         <exec executable="/bin/bash" dir="${project.build.directory}" failonerror="true" output="${project.build.directory}/build.log">
-											<env key="PREFIX" value="${project.build.directory}/dist"/> <!-- ${env.PREFIX} or ${project.build.directory}/dist -->
+											<!-- env key="PREFIX" value="${project.build.directory}/dist"/ --> <!-- ${env.PREFIX} or ${project.build.directory}/dist -->
 											<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/> <!-- default value is "generic" -->
                                             <arg value="-c"/>
 											<!-- the ./ in front of build.sh is important to avoid 'command not found' errors -->
@@ -192,7 +198,9 @@ TO skip the ant portion of the build, which will fail since there is no source t
 										</delete>
 
 										<!-- before zipping, make a copy of the dist directory and leave out empty dirs (parents of the dist-deps that were unzipped, then deleted above, but the fileset doesn't include the directories) ... wouldn't be necessary if there were a better way to deal with it -->
+										<touch file="${project.build.directory}/dist-clean/builder/x" mkdirs="true"/>
 										<copy todir="${project.build.directory}/dist-clean" includeEmptyDirs="false"><fileset dir="${project.build.directory}/dist"/></copy>
+										<delete file="${project.build.directory}/dist-clean/builder/x" quiet="true"/>
                                         <!-- <chmod perm="+x" dir="${project.build.directory}/dist-clean" includes="**"/> -->
 										<zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" whenempty="create">
 											<fileset dir="${project.build.directory}/dist-clean" />
@@ -212,6 +220,8 @@ TO skip the ant portion of the build, which will fail since there is no source t
                                             </condition>
                                         </fail>
 										-->
+									</then>
+									</ac:if>
                                     </target>
                                 </configuration>
                             </execution>

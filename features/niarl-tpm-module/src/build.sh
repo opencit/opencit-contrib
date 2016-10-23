@@ -1,7 +1,7 @@
 #!/bin/bash
 export PREFIX=${PREFIX:-/opt/mtwilson/share/niarl}
 export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
-export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
+export TROUSERS=${TROUSERS:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 
 install_niarl_tpm_module() {

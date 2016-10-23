@@ -25,7 +25,8 @@ install_trousers() {
 	# specifying --with-openssl=$PREFIX is important here in order to be able to compile tpm-tools later;
 	# if we don't specify it then we will get errors like this when compiling tpm-tools:
 	#	/opt/dcgcontrib/lib/libtspi.so: undefined reference to `EVP_EncryptUpdate@OPENSSL_1.0.0'
-	(cd $TROUSERS && ./configure --prefix=$PREFIX --with-openssl=$OPENSSL && make && make install)
+    # re: std=gnu89, see: https://sourceforge.net/p/trousers/mailman/message/31262347/
+	(cd $TROUSERS && ./configure CFLAGS='-std=gnu89' --prefix=$PREFIX --with-openssl=$OPENSSL && make && make install)
     #if [ -d /etc/ld.so.conf.d ]; then
       #echo $PREFIX/lib > /etc/ld.so.conf.d/trousers.conf
     #fi

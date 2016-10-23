@@ -1,7 +1,7 @@
 #!/bin/bash
 export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmquote}
 export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
-export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
+export TROUSERS=${TROUSERS:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 TPM_QUOTE_TOOLS_URL=http://downloads.sourceforge.net/project/tpmquotetools/1.0.2/tpm-quote-tools-1.0.2.tar.gz
 TPM_QUOTE_TOOLS=tpm-quote-tools-1.0.2

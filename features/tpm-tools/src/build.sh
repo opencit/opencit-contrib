@@ -1,7 +1,7 @@
 #!/bin/bash
 export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmtools}
 export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
-export TROUSERS=${OPENSSL:-/opt/mtwilson/share/trousers}
+export TROUSERS=${TROUSERS:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
 TPM_TOOLS_URL=http://downloads.sourceforge.net/project/trousers/tpm-tools/1.3.8/tpm-tools-1.3.8.tar.gz
 TPM_TOOLS=tpm-tools-1.3.8
@@ -20,7 +20,8 @@ install_tpm_tools() {
   if [ -n "$TPM_TOOLS_FILE" ] && [ -f "$TPM_TOOLS_FILE" ]; then
     rm -rf $TPM_TOOLS
     tar fxz $TPM_TOOLS_FILE
-    patch $TPM_TOOLS/src/tpm_mgmt/tpm_nvread.c 1.3.8/tpm-tools-1.3.8_src_tpm_nvread.patch
+    patch -l $TPM_TOOLS/src/tpm_mgmt/tpm_nvread.c 1.3.8/tpm-tools-1.3.8_src_tpm_nvread.patch
+    patch -l $TPM_TOOLS/src/tpm_mgmt/tpm_nvcommon.c 1.3.8/tpm-tools-1.3.8_src_tpm_nvcommon.patch
 	# note: /usr/local/ssl directory specified in our openssl build script
     #(cd $TPM_TOOLS && LDFLAGS="-L/usr/local/lib -L/usr/local/ssl/lib" CFLAGS="-I/usr/local/ssl/include"  ./configure --prefix=/usr/local && make && make install)
 	# LD_PRELOAD="/opt/dcgcontrib/lib/libcrypto.so.1.0.0" LDFLAGS="-L$PREFIX/lib" CFLAGS="-I$PREFIX/include" 
