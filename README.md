@@ -22,17 +22,32 @@ You must have the following tools installed:
 * ant 1.9
 * maven 3.3
 * make 4.1
-* gcc 4.8
+* gcc 5.4
+* g++ 5.4
 * unzip 6.0
 
 Also, the following directories must be created and writable to the
 non-root user which is building the code:
 
+* /opt/mtwilson/share/hex2bin
 * /opt/mtwilson/share/openssl
 * /opt/mtwilson/share/trousers
 * /opt/mtwilson/share/tpmquote
 * /opt/mtwilson/share/tpmtools
 * /opt/mtwilson/share/niarl
+
+Easy way to do it (replace `jenkins` with your non-root username):
+
+    mkdir -p /opt/mtwilson
+    chown -R jenkins:jenkins /opt/mtwilson
+
+Ensure you have the following environment variables set, with correct
+values of ANT_HOME and MAVEN_HOME for your system:
+
+    export LINUX_TARGET=generic
+    export ANT_HOME=/usr/share/apache-ant-1.9.7
+    export MAVEN_HOME=/usr/share/apache-maven-3.3.9
+    export PATH=$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
 # Automated build
 
