@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.intel.mtwilson</groupId>
+  <artifactId>mtwilson-maven-build-contrib-maven</artifactId>
+    <packaging>pom</packaging>
+
+<parent>
+  <groupId>com.intel.mtwilson</groupId>
+  <artifactId>mtwilson-maven-build-contrib-root</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</parent>	
+	
+    <modules>
+    <module>mtwilson-maven-build-sh-zip</module>
+	<module>mtwilson-maven-package-zip</module>
+    </modules>
+</project>
