@@ -17,21 +17,21 @@ aptget_detect() {
 generate_binary() {
   # RHEL
   if yum_detect; then
-    yum -y install rpmbuild
+    sudo yum install -y rpmbuild
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
-    rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
+    sudo rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
     classifier=$(echo "${tboot_rpm}" | awk -F'/' '{print $2}')
     mvn install:install-file -Dfile="${tboot_rpm}" -DgroupId=net.sourceforge.tboot -DartifactId=tboot -Dversion="${TBOOT_VERSION}" -Dpackaging=rpm -Dclassifier="${classifier}"
     return
   # UBUNTU
   elif aptget_detect; then
-    apt-get -y install packaging-dev debhelper libtspi-dev
+    sudo apt-get install -y packaging-dev debhelper libtspi-dev
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     TBOOT_TGZ=$(find . -name ${TBOOT}*-sources.tgz)
     tar fxz "${TBOOT_TGZ}"
     mv debian "${TBOOT}"
-    (cd "${TBOOT}" && debuild -b -uc -us)
+    (cd "${TBOOT}" && sudo debuild -b -uc -us)
     tboot_deb=$(find . -name tboot*.deb)
     classifier=$(echo "${tboot_deb%.*}" | awk -F'_' '{print $3}')
     mvn install:install-file -Dfile="${tboot_deb}" -DgroupId="net.sourceforge.tboot" -DartifactId="tboot" -Dversion="${TBOOT_VERSION}" -Dpackaging="deb" -Dclassifier="${classifier}"
