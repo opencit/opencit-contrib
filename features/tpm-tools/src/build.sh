@@ -28,7 +28,7 @@ install_tpm_tools() {
     # LD_PRELOAD="/opt/dcgcontrib/lib/libcrypto.so.1.0.0" LDFLAGS="-L$PREFIX/lib" CFLAGS="-I$PREFIX/include" 
     (cd $TPM_TOOLS-patched && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" ./configure --prefix=$PREFIX --with-openssl=$OPENSSL)
     if [ $? -ne 0 ]; then echo "Failed to configure TPM tools"; exit 1; fi
-    (cd $TPM_TOOLS-patched && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" "${KWFLAGS_TPM_TOOLS}" make)
+    (cd $TPM_TOOLS-patched && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" ${KWFLAGS_TPM_TOOLS} make)
     if [ $? -ne 0 ]; then echo "Failed to make TPM tools"; exit 2; fi
     (cd $TPM_TOOLS-patched && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" make install)
     if [ $? -ne 0 ]; then echo "Failed to make install TPM tools"; exit 3; fi
@@ -44,7 +44,7 @@ install_tpm_tools_contrib() {
   #gcc -g -O0 -L$PREFIX/lib -DLOCALEDIR='"/usr/share/locale"' -I$PREFIX/include -Itpm-tools-1.3.8 -Itpm-tools-1.3.8/include -o tpm_signdata  tpm_signdata.c tpm-tools-1.3.8/lib/tpm_tspi.c tpm-tools-1.3.8/lib/tpm_utils.c tpm-tools-1.3.8/lib/tpm_log.c hex2bytea.c -lcrypto -ltspi 
   #mkdir -p $PREFIX/bin
   #cp tpm_createkey tpm_bindaeskey tpm_unbindaeskey tpm_signdata $PREFIX/bin
-  (cd "1.3.8/additions" && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" TPM_TOOLS_SRC="../../tpm-tools-1.3.8-patched" "${KWFLAGS_TPM_TOOLS_ADDITIONS}" make)
+  (cd "1.3.8/additions" && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" TPM_TOOLS_SRC="../../tpm-tools-1.3.8-patched" ${KWFLAGS_TPM_TOOLS_ADDITIONS} make)
   if [ $? -ne 0 ]; then echo "Failed to make TPM tools contributions"; exit 4; fi
   (cd "1.3.8/additions" && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" TPM_TOOLS_SRC="../../tpm-tools-1.3.8-patched" PREFIX=$PREFIX make install)
   if [ $? -ne 0 ]; then echo "Failed to make install TPM tools contributions"; exit 5; fi

@@ -20,7 +20,7 @@ generateBuildSpecs() {
   export KWFLAGS_TPM_TOOLS_ADDITIONS="kwinject --output '${buildSpecsDirectory}/contrib_tpm_tools_additions.out'"
   ant
   
-  # 'openssl' and 'TPM quote tools'
+  # 'openssl', 'TPM quote tools', and 'tboot'
   # NOT required as we are downloading code from web and not altering
 }
 

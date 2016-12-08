@@ -27,7 +27,7 @@ install_trousers() {
     if [ $? -ne 0 ]; then echo "Failed to patch trousers"; exit 1; fi
     (cd $TROUSERS && CFLAGS="${CFLAGS} -std=gnu89" LDFLAGS="${LDFLAGS}" ./configure --prefix=$PREFIX --with-openssl=$OPENSSL)
     if [ $? -ne 0 ]; then echo "Failed to configure trousers"; exit 2; fi
-    (cd $TROUSERS && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" "${KWFLAGS_TROUSERS}" make)
+    (cd $TROUSERS && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ${KWFLAGS_TROUSERS} make)
     if [ $? -ne 0 ]; then echo "Failed to make trousers"; exit 3; fi
     (cd $TROUSERS && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make install)
     if [ $? -ne 0 ]; then echo "Failed to make install trousers"; exit 4; fi

@@ -15,7 +15,7 @@ install_niarl_tpm_module() {
   #g++ -g -I$PREFIX/include -L$PREFIX/lib -o"NIARL_TPM_Module" NIARL_TPM_ModuleV2.o NIARL_Util_ByteBlob.o NIARL_Util_Mask.o main.o -ltspi
   #mkdir -p $PREFIX/bin
   #cp NIARL_TPM_Module $PREFIX/bin
-  (cd c++ && CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" "${KWFLAGS_NIARL}" make)
+  (cd c++ && CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" ${KWFLAGS_NIARL} make)
   if [ $? -ne 0 ]; then echo "Failed to make NIARL"; exit 1; fi
   (cd c++ && PREFIX=$PREFIX make install)
   if [ $? -ne 0 ]; then echo "Failed to make install NIARL"; exit 2; fi

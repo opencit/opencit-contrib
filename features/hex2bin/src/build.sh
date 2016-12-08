@@ -14,7 +14,7 @@ install_hex2bin() {
   echo "PREFIX=$PREFIX"
   mkdir -p $PREFIX
   if [ -d "$HEX2BIN_DIR" ]; then
-    (cd $HEX2BIN_DIR && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" "${KWFLAGS_HEX2BIN}" make)
+    (cd $HEX2BIN_DIR && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ${KWFLAGS_HEX2BIN} make)
     if [ $? -ne 0 ]; then echo "Failed to make hex2bin"; exit 1; fi
     (cd $HEX2BIN_DIR && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make install)
     if [ $? -ne 0 ]; then echo "Failed to make install hex2bin"; exit 2; fi
