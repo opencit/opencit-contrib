@@ -25,8 +25,8 @@
             <build>
                 <plugins>
                     <!-- copy all source dependencies (non-transitive) to the target folder for unpacking,
-                         copy all distribution dependencies (non-transitive) to the target folder for 
-                         unpacking into target/dist -->
+                    copy all distribution dependencies (non-transitive) to the target folder for 
+                    unpacking into target/dist -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -130,7 +130,6 @@
                     <type>tgz</type>
                 </dependency>
             </dependencies>
-            
         </profile>
     </profiles>
     

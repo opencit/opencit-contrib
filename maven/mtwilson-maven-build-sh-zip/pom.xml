@@ -1,55 +1,54 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
+    
     <groupId>com.intel.mtwilson.maven</groupId>
     <artifactId>mtwilson-maven-build-sh-zip</artifactId>
-  <version>1.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
+    
+    <parent>
+        <groupId>com.intel.mtwilson</groupId>
+        <artifactId>mtwilson-maven-build-contrib-maven</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    
     <packaging>pom</packaging>
-<description>
-Describes how to build code using build.sh
-The project directory layout must be like this:
-(pom.xml, src/main/resources/build.sh, src/main/resources/*)
-When the project is built, everything src/main/resources/ is
-copied to target/ so the build.sh script runs with all the 
-resources in the same directory as before. 
-The build.sh script should accept a PREFIX variable and provide
-a reasonable default (dist)  if it's not defined. 
+    <description>
+        Describes how to build code using build.sh
+        The project directory layout must be like this:
+        (pom.xml, src/main/resources/build.sh, src/main/resources/*)
+        When the project is built, everything src/main/resources/ is
+        copied to target/ so the build.sh script runs with all the 
+        resources in the same directory as before. 
+        The build.sh script should accept a PREFIX variable and provide
+        a reasonable default (dist)  if it's not defined. 
 
-To build this "recipe" pom, use:
-mvn install
+        To build this "recipe" pom, use:
+        mvn install
 
-It looks for src/build.sh and if not present then it skips
-the related build steps.
-
-</description>
-	
-	<parent>
-  <groupId>com.intel.mtwilson</groupId>
-  <artifactId>mtwilson-maven-build-contrib-maven</artifactId>
-  <version>1.0-SNAPSHOT</version>
-	</parent>
-
-<properties>
-<env.LINUX_TARGET>generic</env.LINUX_TARGET>
-</properties>
-
-      <!-- the path where all compiled executables and libraries should be "installed" -->
-	<!--
-  <properties>
-    <dist.path>/home/robot/builds/</dist.path>
-  </properties>
-	-->
-
-<!--
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>src</resource>
-		</resources>
-	</build>
--->
-	
+        It looks for src/build.sh and if not present then it skips
+        the related build steps.
+    </description>
+    
+    <properties>
+        <env.LINUX_TARGET>generic</env.LINUX_TARGET>
+    </properties>
+    
+    <!-- the path where all compiled executables and libraries should be "installed" -->
+    <!--
+    <properties>
+        <dist.path>/home/robot/builds/</dist.path>
+    </properties>
+    -->
+    
+    <!--
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>src</resource>
+        </resources>
+    </build>
+    -->
+    
     <profiles>
         <profile>
             <activation>
@@ -57,26 +56,23 @@ the related build steps.
                     <family>unix</family>
                 </os>
             </activation>
-
+            
             <build>
                 <!-- NOTE: the order of plugins listed here is important because
                 when multiple plugins have the same phase, maven 3.0.3 and later
                 executes them in the order listed in the pom.  so first we create
                 the jar, then we copy all resources in to the feature directory,
                 then we create the zip file. -->
-        
                 <plugins>
-            
-            
                     <!-- copy all source dependencies (non-transitive) to the target folder for unpacking,
-						  copy all distribution dependencies (non-transitive) to the target/dist-deps folder 
-						for unpacking into target/dist -->
+                      copy all distribution dependencies (non-transitive) to the target/dist-deps folder 
+                    for unpacking into target/dist -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-								<id>copy-sources</id>
+                                <id>copy-sources</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>copy-dependencies</goal>
@@ -84,11 +80,11 @@ the related build steps.
                                 <configuration>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                     <excludeTransitive>true</excludeTransitive>
-									<includeClassifiers>sources</includeClassifiers>
+                                    <includeClassifiers>sources</includeClassifiers>
                                 </configuration>
                             </execution>
                             <execution>
-								<id>copy-dist-deps</id>
+                                <id>copy-dist-deps</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>copy-dependencies</goal>
@@ -96,7 +92,7 @@ the related build steps.
                                 <configuration>
                                     <outputDirectory>${project.build.directory}/dist-deps</outputDirectory>
                                     <excludeTransitive>false</excludeTransitive>
-									<excludeClassifiers>sources</excludeClassifiers>
+                                    <excludeClassifiers>sources</excludeClassifiers>
                                 </configuration>
                             </execution>
                         </executions>
@@ -125,7 +121,7 @@ the related build steps.
                             </execution>
                         </executions>
                     </plugin>
-
+                    
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -138,87 +134,82 @@ the related build steps.
                                 </goals>
                                 <configuration>
                                     <target xmlns:ac="antlib:net.sf.antcontrib">
-									<available property="feature.build.sh" file="${basedir}/src/build.sh" type="file"/>
-									<ac:if>
-										<equals arg1="${feature.build.sh}" arg2="true"/>
-                                    <then>
-										<!-- distribution target defined by env LINUX_TARGET or default value 'generic' (if LINUX_TARGET is already defined in env, this property task has no effect) -->
-										<property name="env.LINUX_TARGET" value="generic"/> 
-
-                                        <!-- build  directory for installing native binaries -->
-                                        <mkdir dir="${project.build.directory}/dist"/>
-                                        <!-- build  directory for downloading native binaries; if does not exist then some components will fail -->
-                                        <mkdir dir="${project.build.directory}/dist-deps"/>
-<!--
-                                        <mkdir dir="${project.build.directory}/dist-deps"/>
--->
-										<!-- extract all zip files (dependencies) into dist directory;
-											these could be libraries required for linking , for example, copied by copy-dist-deps above -->
-										<delete file="${project.build.directory}/dist/builder/x" quiet="true"/>
-										<apply executable="unzip" dir="${project.build.directory}/dist">
-											<srcfile/>
-											<fileset dir="${project.build.directory}/dist-deps" includes="*.zip"/>
-										</apply>
-										<apply executable="tar" dir="${project.build.directory}/dist">
-											<arg value="fxz"/>
-											<srcfile/>
-											<fileset dir="${project.build.directory}/dist-deps" includes="*.tgz"/>
-										</apply>
-
-										<!--  the touch command ensures there's at least one entry in the dist.contents fileset (if the fileset is empty, the delete command later will delete everything in dist, including what we built) -->
-										<touch file="${project.build.directory}/dist/builder/x" mkdirs="true"/>
-										<!-- list all files in dist directory ,  the touch command ensures there's at least one (without it, the delete command later will delete everything from maven -repo-->
-										<fileset id="dist.contents" dir="${project.build.directory}/dist"/>
-										<pathconvert pathsep="," property="dist.contents.csv" refid="dist.contents">
-											<!-- store only relative paths, so they can be used with fileset later; trailing / is important -->
-											<map from="${project.build.directory}/dist/" to=""/>
-										</pathconvert>
-<!-- debug only -->
-<!-- for example: dep files: hex2bin-master/LICENSE,hex2bin-master/Makefile,hex2bin-master/README.md,hex2bin-master/hex2bin.c,hex2bin-master/test.sh -->
-<!--
-<echo>dep files: ${dist.contents.csv}</echo>
--->
-<!--
-                                        <exec executable="/usr/bin/unionfs-fuse" dir="${project.build.directory}" failonerror="true">
-                                        </exec>
--->
-                                        <chmod perm="+x" file="${project.build.directory}/build.sh"/>
-                                        <exec executable="/bin/bash" dir="${project.build.directory}" failonerror="true">
-											<redirector output="${project.build.directory}/build.log" alwayslog="true"/>
-											<!-- env key="PREFIX" value="${project.build.directory}/dist"/ --> <!-- ${env.PREFIX} or ${project.build.directory}/dist -->
-											<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/> <!-- default value is "generic" -->
-                                            <arg value="-c"/>
-											<!-- the ./ in front of build.sh is important to avoid 'command not found' errors -->
-                                            <arg value="./build.sh"/>
-                                        </exec>
-
-										<!-- now delete all the dependencies that were unzipped before building; result is dist has only the files copied by the build script -->
-										<delete verbose="true">
-											<!-- <fileset refid="dist.contents"/> -->
-											<fileset dir="${project.build.directory}/dist" includes="${dist.contents.csv}"/>
-										</delete>
-
-										<!-- <chmod perm="+x" dir="${project.build.directory}/dist-clean" includes="**"/> -->
-										<zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" whenempty="create">
-											<fileset dir="${project.build.directory}/dist-clean" />
-										</zip>
-<!--
-<tar destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar" basedir="${project.build.directory}/dist-clean"/>
-<gzip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar.gz" src="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar"/>
--->
-
-										<attachartifact file="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" type="zip" classifier="${env.LINUX_TARGET}"/>
-<!--                                    
-                                        <fail message="Cannot build project">
-                                            <condition>
-                                                <not>
-                                                    <equals arg1="${mavenExitBuild}" arg2="0"/>
-                                                </not>
-                                            </condition>
-                                        </fail>
-										-->
-									</then>
-									</ac:if>
+                                        <available property="feature.build.sh" file="${basedir}/src/build.sh" type="file"/>
+                                        <ac:if>
+                                            <equals arg1="${feature.build.sh}" arg2="true"/>
+                                            <then>
+                                                <!-- distribution target defined by env LINUX_TARGET or default value 'generic' (if LINUX_TARGET is already defined in env, this property task has no effect) -->
+                                                <property name="env.LINUX_TARGET" value="generic"/>
+                                                <!-- build  directory for installing native binaries -->
+                                                <mkdir dir="${project.build.directory}/dist"/>
+                                                <!-- build  directory for downloading native binaries; if does not exist then some components will fail -->
+                                                <mkdir dir="${project.build.directory}/dist-deps"/>
+                                                <!--
+                                                <mkdir dir="${project.build.directory}/dist-deps"/>
+                                                -->
+                                                <!-- extract all zip files (dependencies) into dist directory;
+                                                these could be libraries required for linking , for example, copied by copy-dist-deps above -->
+                                                <delete file="${project.build.directory}/dist/builder/x" quiet="true"/>
+                                                <apply executable="unzip" dir="${project.build.directory}/dist">
+                                                    <srcfile/>
+                                                    <fileset dir="${project.build.directory}/dist-deps" includes="*.zip"/>
+                                                </apply>
+                                                <apply executable="tar" dir="${project.build.directory}/dist">
+                                                    <arg value="fxz"/>
+                                                    <srcfile/>
+                                                    <fileset dir="${project.build.directory}/dist-deps" includes="*.tgz"/>
+                                                </apply>
+                                                <!--  the touch command ensures there's at least one entry in the dist.contents fileset (if the fileset is empty, the delete command later will delete everything in dist, including what we built) -->
+                                                <touch file="${project.build.directory}/dist/builder/x" mkdirs="true"/>
+                                                <!-- list all files in dist directory ,  the touch command ensures there's at least one (without it, the delete command later will delete everything from maven -repo-->
+                                                <fileset id="dist.contents" dir="${project.build.directory}/dist"/>
+                                                <pathconvert pathsep="," property="dist.contents.csv" refid="dist.contents">
+                                                    <!-- store only relative paths, so they can be used with fileset later; trailing / is important -->
+                                                    <map from="${project.build.directory}/dist/" to=""/>
+                                                </pathconvert>
+                                                <!-- debug only -->
+                                                <!-- for example: dep files: hex2bin-master/LICENSE,hex2bin-master/Makefile,hex2bin-master/README.md,hex2bin-master/hex2bin.c,hex2bin-master/test.sh -->
+                                                <!--
+                                                <echo>dep files: ${dist.contents.csv}</echo>
+                                                -->
+                                                <!--
+                                                <exec executable="/usr/bin/unionfs-fuse" dir="${project.build.directory}" failonerror="true">
+                                                </exec>
+                                                -->
+                                                <chmod perm="+x" file="${project.build.directory}/build.sh"/>
+                                                <exec executable="/bin/bash" dir="${project.build.directory}" failonerror="true">
+                                                    <redirector output="${project.build.directory}/build.log" alwayslog="true"/>
+                                                    <!-- env key="PREFIX" value="${project.build.directory}/dist"/ --> <!-- ${env.PREFIX} or ${project.build.directory}/dist -->
+                                                    <env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/> <!-- default value is "generic" -->
+                                                    <arg value="-c"/>
+                                                    <!-- the ./ in front of build.sh is important to avoid 'command not found' errors -->
+                                                    <arg value="./build.sh"/>
+                                                </exec>
+                                                <!-- now delete all the dependencies that were unzipped before building; result is dist has only the files copied by the build script -->
+                                                <delete verbose="true">
+                                                    <!-- <fileset refid="dist.contents"/> -->
+                                                    <fileset dir="${project.build.directory}/dist" includes="${dist.contents.csv}"/>
+                                                </delete>
+                                                <!-- <chmod perm="+x" dir="${project.build.directory}/dist-clean" includes="**"/> -->
+                                                <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" whenempty="create">
+                                                    <fileset dir="${project.build.directory}/dist-clean" />
+                                                </zip>
+                                                <!--
+                                                <tar destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar" basedir="${project.build.directory}/dist-clean"/>
+                                                <gzip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar.gz" src="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.tar"/>
+                                                -->
+                                                <attachartifact file="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" type="zip" classifier="${env.LINUX_TARGET}"/>
+                                                <!--                                    
+                                                <fail message="Cannot build project">
+                                                    <condition>
+                                                        <not>
+                                                            <equals arg1="${mavenExitBuild}" arg2="0"/>
+                                                        </not>
+                                                    </condition>
+                                                </fail>
+                                                -->
+                                            </then>
+                                        </ac:if>
                                     </target>
                                 </configuration>
                             </execution>
@@ -235,8 +226,9 @@ the related build steps.
                                 <version>1.0b3</version>
                             </dependency>
                         </dependencies>
-                    </plugin>	    
-<!--
+                    </plugin>
+                    
+                    <!--
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
@@ -252,18 +244,17 @@ the related build steps.
                                         <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip</file>
                                             <type>zip</type>
-											<classifier>${env.LINUX_TARGET}</classifier>
+                                            <classifier>${env.LINUX_TARGET}</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
--->
+                    -->
                 </plugins>
-        		
             </build>
         </profile>
     </profiles>
-
+    
 </project>
