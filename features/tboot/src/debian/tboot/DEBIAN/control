@@ -1,0 +1,14 @@
+Package: tboot
+Version: 1.9.4-0ubuntu1
+Architecture: amd64
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Installed-Size: 897
+Depends: libc6 (>= 2.14), zlib1g (>= 1:1.1.4)
+Section: admin
+Priority: optional
+Homepage: http://sourceforge.net/projects/tboot/
+Description: Trusted Boot (tboot)
+ Trusted Boot (tboot) is an open source, pre-kernel/VMM module that uses
+ Intel Trusted Execution Technology (Intel TXT) to perform a measured
+ and verified launch of an OS kernel/VMM.
+Original-Maintainer: Gang Wei <gang.wei@intel.com>

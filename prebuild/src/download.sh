@@ -17,6 +17,10 @@ TPM_TOOLS_VERSION="1.3.8"
 TPM_TOOLS="tpm-tools-${TPM_TOOLS_VERSION}"
 TPM_TOOLS_URL="http://downloads.sourceforge.net/project/trousers/tpm-tools/${TPM_TOOLS_VERSION}/${TPM_TOOLS}.tar.gz"
 
+TBOOT_VERSION="1.9.4"
+TBOOT="tboot-${TBOOT_VERSION}"
+TBOOT_URL="http://downloads.sourceforge.net/project/tboot/tboot/${TBOOT}.tar.gz"
+
 
 yum_detect() {
   yum=`which yum 2>/dev/null`
@@ -114,6 +118,21 @@ download_and_maven_install_tpm_tools() {
   fi
 }
 
+download_tboot() {
+  if [ ! -f "${TBOOT}.tar.gz" ]; then
+    wget --no-check-certificate "${TBOOT_URL}"
+  fi
+}
+maven_install_tboot() {
+  maven_install "${TBOOT}.tar.gz" "net.sourceforge.tboot" "tboot" "${TBOOT_VERSION}" "tgz" "sources"
+}
+download_and_maven_install_tboot() {
+  if [ ! -f "${MAVEN_REPOSITORY_PATH}/net/sourceforge/tboot/tboot/${TBOOT_VERSION}/${TBOOT}*.tgz" ]; then
+    download_tboot
+    maven_install_tboot
+  fi
+}
+
 
 echo "Downloading and installing prerequisites..."
 download_prerequisites
@@ -125,3 +144,5 @@ echo "Downloading and maven installing TPM quote tools..."
 download_and_maven_install_tpm_quote_tools
 echo "Downloading and maven installing TPM tools..."
 download_and_maven_install_tpm_tools
+echo "Downloading and maven installing tboot..."
+download_and_maven_install_tboot

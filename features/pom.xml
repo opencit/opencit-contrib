@@ -18,6 +18,7 @@
 	<!-- compilation error: /usr/bin/ld: create_tpm_key.o: undefined reference to symbol 'ERR_load_crypto_strings'
 	<module>openssl-tpm-engine</module>
 	-->
+    <module>tboot</module>
     <module>tpm-agent-tools</module>
     <module>tpm-quote-tools</module>
     <module>tpm-tools</module>
