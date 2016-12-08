@@ -62,15 +62,6 @@
 		</dependency>
 
 		<dependency>
-  <groupId>net.sourceforge.trousers</groupId>
-  <artifactId>openssl-tpm-engine-dist</artifactId>
-			<version>0.4.2</version>
-			<type>zip</type>
-			<classifier>${env.LINUX_TARGET}</classifier>
-		</dependency>
-
-
-		<dependency>
   <groupId>net.sourceforge.tpmquotetools</groupId>
   <artifactId>tpm-agent-tools-dist</artifactId>
 			<version>1.0</version>

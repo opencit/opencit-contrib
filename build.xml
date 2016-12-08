@@ -20,19 +20,20 @@
 		<condition property="cmd.maven" value="${env.MAVEN_HOME}/bin/mvn">
 			<os family="unix"/>
 		</condition>
+		<condition property="env.LINUX_TARGET" value="generic">
+			<not><isset property="env.LINUX_TARGET"/></not>
+		</condition>
 	</target>
 	
 	<target name="ready" depends="init">
 
 		<!-- the build.targets file is generated from a template, replacing LINUX_TARGET using environment variable or default value of 'generic' -->
-		<copy file="build.targets.template" tofile="build.targets"/>
-		<condition property="env.LINUX_TARGET" value="generic">
-			<not><isset property="env.LINUX_TARGET"/></not>
-		</condition>
+		<copy file="build.targets.template" tofile="build.targets" overwrite="true"/>
 		<replace file="build.targets" token="${LINUX_TARGET}" value="${env.LINUX_TARGET}"/>
 
 		<!-- the root pom -->
 		<exec executable="${cmd.maven}" resultproperty="mavenExitInstallPom">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="-DskipTests=true"/>
 			<arg value="-N"/>
 			<arg value="install"/>
@@ -54,6 +55,7 @@
 		</fail>
 		-->
 		<exec executable="${cmd.maven}" dir="maven" resultproperty="mavenExitInstallParents">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="-DskipTests=true"/>
 			<arg value="-DskipAntBuild=true"/>
 			<arg value="install"/>
@@ -66,6 +68,7 @@
 	<target name="clean" depends="init">
 		<!-- clean all projects -->
 		<exec executable="${cmd.maven}" resultproperty="mavenExitClean">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="clean"/>
 		</exec>
 		<fail message="Failed to clean project" status="${mavenExitClean}">
@@ -73,6 +76,7 @@
 		</fail>
 		<!-- the packages -->
 		<exec executable="${cmd.maven}" dir="packages" resultproperty="mavenExitCleanPackages">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="clean"/>
 		</exec>
 		<fail message="Cannot clean project packages" status="${mavenExitCleanPackages}">
@@ -80,9 +84,22 @@
 		</fail>
 	</target>
 	
-	<target name="build" depends="init">
+	<target name="prebuild" depends="init">
+		<!-- the feature projects -->
+		<exec executable="${cmd.maven}"  dir="prebuild" resultproperty="mavenExitDownload">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
+			<arg value="-DskipTests=true"/>
+			<arg value="install"/>
+		</exec>
+		<fail message="Failed to download or maven install artifacts" status="${mavenExitDownload}">
+			<condition><not><equals arg1="${mavenExitDownload}" arg2="0"/></not></condition>
+		</fail>
+	</target>
+	
+	<target name="build" depends="init,prebuild">
 		<!-- the feature projects -->
 		<exec executable="${cmd.maven}"  dir="features" resultproperty="mavenExitInstall">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="-DskipTests=true"/>
 			<arg value="install"/>
 		</exec>
@@ -94,12 +111,13 @@
 	<target name="packages" depends="init">
 		<!-- the root pom and all projects -->
 		<exec executable="${cmd.maven}" dir="packages">
+			<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/>
 			<arg value="-DskipTests=true"/>
 			<arg value="clean"/>
 			<arg value="install"/>
 		</exec>
 	</target>
 
-	<target name="all" depends="ready,clean,build,packages"></target>
+	<target name="all" depends="ready,clean,prebuild,build,packages"></target>
 	
 </project>

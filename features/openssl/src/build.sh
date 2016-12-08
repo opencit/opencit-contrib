@@ -1,15 +1,12 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-/opt/mtwilson/share/openssl}
-export LINUX_TARGET=${LINUX_TARGET:-generic}
-OPENSSL_URL=http://openssl.org/source/openssl-1.0.2a.tar.gz
-OPENSSL=openssl-1.0.2a
+OPENSSL_VERSION="1.0.2a"
+OPENSSL="openssl-${OPENSSL_VERSION}"
 
-download_files() {
-  if [ ! -f $OPENSSL.tar.gz ]; then
-    wget $OPENSSL_URL
-    mvn install:install-file -Dfile=openssl-1.0.2a.tar.gz -DgroupId=org.openssl -DartifactId=openssl -Dversion=1.0.2a -Dpackaging=tgz -Dclassifier=sources
-  fi
-}
+export PREFIX="${PREFIX:-/opt/mtwilson/share/openssl}"
+export LINUX_TARGET="${LINUX_TARGET:-generic}"
+export CFLAGS="-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
+export LDFLAGS="-z noexecstack -z relro -z now -pie"
+
 
 install_openssl() {
   mkdir -p $PREFIX
@@ -20,7 +17,12 @@ install_openssl() {
     tar fxz $OPENSSL_FILE
 	# options "no-idea no-mdc2 no-rc5" disable support for these patented algorithms
 	# --enable-cross-compile
-    (cd $OPENSSL && ./config --shared --prefix=$PREFIX --openssldir=$PREFIX no-idea no-mdc2 no-rc5 && make && make install)
+    (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ./config --shared --prefix=$PREFIX --openssldir=$PREFIX no-idea no-mdc2 no-rc5)
+    if [ $? -ne 0 ]; then echo "Failed to configure openssl"; exit 1; fi
+    (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make)
+    if [ $? -ne 0 ]; then echo "Failed to make openssl"; exit 2; fi
+    (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make install)
+    if [ $? -ne 0 ]; then echo "Failed to make install openssl"; exit 3; fi
     #if [ -d /etc/ld.so.conf.d ]; then
       #echo /usr/local/ssl/lib/ > /etc/ld.so.conf.d/openssl.conf
 	  #echo $PREFIX/lib > /etc/ld.so.conf.d/openssl.conf
@@ -30,7 +32,6 @@ install_openssl() {
   fi
 }
 
-
 # look for /usr/bin/openssl, return 0 if found, return 1 if not found
 detect_openssl() {
   openssl_bin=`which openssl`
@@ -39,3 +40,6 @@ detect_openssl() {
 }
 
 install_openssl
+rm -rf dist-clean
+mkdir dist-clean
+cp -r $PREFIX dist-clean

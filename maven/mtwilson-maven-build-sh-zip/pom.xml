@@ -183,7 +183,8 @@ the related build steps.
                                         </exec>
 -->
                                         <chmod perm="+x" file="${project.build.directory}/build.sh"/>
-                                        <exec executable="/bin/bash" dir="${project.build.directory}" failonerror="true" output="${project.build.directory}/build.log">
+                                        <exec executable="/bin/bash" dir="${project.build.directory}" failonerror="true">
+											<redirector output="${project.build.directory}/build.log" alwayslog="true"/>
 											<!-- env key="PREFIX" value="${project.build.directory}/dist"/ --> <!-- ${env.PREFIX} or ${project.build.directory}/dist -->
 											<env key="LINUX_TARGET" value="${env.LINUX_TARGET}"/> <!-- default value is "generic" -->
                                             <arg value="-c"/>
@@ -197,11 +198,7 @@ the related build steps.
 											<fileset dir="${project.build.directory}/dist" includes="${dist.contents.csv}"/>
 										</delete>
 
-										<!-- before zipping, make a copy of the dist directory and leave out empty dirs (parents of the dist-deps that were unzipped, then deleted above, but the fileset doesn't include the directories) ... wouldn't be necessary if there were a better way to deal with it -->
-										<touch file="${project.build.directory}/dist-clean/builder/x" mkdirs="true"/>
-										<copy todir="${project.build.directory}/dist-clean" includeEmptyDirs="false"><fileset dir="${project.build.directory}/dist"/></copy>
-										<delete file="${project.build.directory}/dist-clean/builder/x" quiet="true"/>
-                                        <!-- <chmod perm="+x" dir="${project.build.directory}/dist-clean" includes="**"/> -->
+										<!-- <chmod perm="+x" dir="${project.build.directory}/dist-clean" includes="**"/> -->
 										<zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-${env.LINUX_TARGET}.zip" whenempty="create">
 											<fileset dir="${project.build.directory}/dist-clean" />
 										</zip>

@@ -268,6 +268,7 @@ main (int ac, char **av)
 		return 1;
 	  }
 
+
 	  TSS_UUID uuid;
 	  if (sizeof uuid != fread((void *)&uuid, 1, sizeof uuid, f_aik_uuid_in)) {
 		fprintf(stderr, "Expecting a uuid of %zd bytes in %s\n",
@@ -399,9 +400,13 @@ main (int ac, char **av)
 	fclose (f_out);
 
 	printf ("Success!\n");
+	if(buf != NULL)
+		free(buf);
 	return 0;
 
 error:
+	if(buf != NULL)
+		free(buf);
 	fprintf (stderr, "Failure, error code: 0x%x\n", result);
 	return 1;
 }

@@ -1,17 +1,14 @@
 #!/bin/bash
+TPM_QUOTE_TOOLS_VERSION="1.0.2"
+TPM_QUOTE_TOOLS="tpm-quote-tools-${TPM_QUOTE_TOOLS_VERSION}"
+
 export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmquote}
 export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
 export TROUSERS=${TROUSERS:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
-TPM_QUOTE_TOOLS_URL=http://downloads.sourceforge.net/project/tpmquotetools/1.0.2/tpm-quote-tools-1.0.2.tar.gz
-TPM_QUOTE_TOOLS=tpm-quote-tools-1.0.2
+export CFLAGS="-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
+export LDFLAGS="-z noexecstack -z relro -z now -pie"
 
-download_files() {
-  if [ ! -f $TPM_QUOTE_TOOLS.tar.gz ]; then
-    wget $TPM_QUOTE_TOOLS_URL
-    mvn install:install-file -Dfile=tpm-quote-tools-1.0.2.tar.gz -DgroupId=net.sourceforge.tpmquotetools -DartifactId=tpm-quote-tools -Dversion=1.0.2 -Dpackaging=tgz -Dclassifier=sources
-  fi
-}
 
 install_tpm_quote_tools() {
   mkdir -p $PREFIX
@@ -20,8 +17,16 @@ install_tpm_quote_tools() {
   if [ -n "$TPM_QUOTE_TOOLS_FILE" ] && [ -f "$TPM_QUOTE_TOOLS_FILE" ]; then
     rm -rf $TPM_QUOTE_TOOLS
     tar fxz $TPM_QUOTE_TOOLS_FILE
-	(cd $TPM_QUOTE_TOOLS &&  CFLAGS="-I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="-L$OPENSSL/lib -L$TROUSERS/lib" ./configure --prefix=$PREFIX && make && make install)
+    (cd $TPM_QUOTE_TOOLS && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" ./configure --prefix=$PREFIX)
+    if [ $? -ne 0 ]; then echo "Failed to configure TPM quote tools"; exit 1; fi
+    (cd $TPM_QUOTE_TOOLS && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" PREFIX=$PREFIX make)
+    if [ $? -ne 0 ]; then echo "Failed to make TPM quote tools"; exit 2; fi
+    (cd $TPM_QUOTE_TOOLS && CFLAGS="${CFLAGS} -I$OPENSSL/include -I$TROUSERS/include" LDFLAGS="${LDFLAGS} -L$OPENSSL/lib -L$TROUSERS/lib" PREFIX=$PREFIX make install)
+    if [ $? -ne 0 ]; then echo "Failed to make install TPM quote tools"; exit 3; fi
   fi
 }
 
 install_tpm_quote_tools
+rm -rf dist-clean
+mkdir dist-clean
+cp -r $PREFIX dist-clean

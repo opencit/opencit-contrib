@@ -11,17 +11,6 @@
     <artifactId>mtwilson-maven-build-sh-zip</artifactId>
   <version>1.0-SNAPSHOT</version>
   <relativePath/>
-</parent>	
+</parent>
 
-<dependencies>
-
-        <dependency>
-            <groupId>com.github.hex2bin</groupId>
-            <artifactId>hex2bin</artifactId>
-			<version>1.0</version>
-			<type>zip</type>
-			<classifier>sources</classifier>
-        </dependency>
-</dependencies>
-	
-	</project>
+</project>

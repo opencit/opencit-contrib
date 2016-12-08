@@ -1,32 +1,27 @@
 #!/bin/bash
+VERSION=1.0
+HEX2BIN_DIR=c
+
 # PREFIX must be an absolute path
 # PREFIX must be exported for "make" subshell
 export PREFIX=${PREFIX:-/opt/mtwilson/share/hex2bin}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
-VERSION=1.0
-HEX2BIN_URL=https://github.com/jbuhacoff/hex2bin/archive/master.zip
-HEX2BIN=hex2bin-master
+export CFLAGS="-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
+export LDFLAGS="-z noexecstack -z relro -z now -pie"
 
-download_files() {
-  if [ ! -f hex2bin-1.0.zip ]; then
-    wget $HEX2BIN_URL -O hex2bin-1.0.zip
-	mvn install:install-file -Dfile=hex2bin-1.0.zip -DgroupId=com.github.hex2bin -DartifactId=hex2bin -Dversion=1.0 -Dpackaging=zip -Dclassifier=sources
-  fi
-}
 
 install_hex2bin() {
   echo "PREFIX=$PREFIX"
   mkdir -p $PREFIX
-  HEX2BIN_FILE=`find hex2bin*zip`
-  echo "hex2bin zip: $HEX2BIN_FILE"
-  echo "hex2bin: $HEX2BIN"
-  if [ -n "$HEX2BIN_FILE" ] && [ -f "$HEX2BIN_FILE" ]; then
-    rm -rf $HEX2BIN
-    unzip $HEX2BIN_FILE
-    cp $HEX2BIN/Makefile $HEX2BIN/Makefile.bak
-    patch -p0 < 1.0/hex2bin_Makefile.patch
-    (cd $HEX2BIN && make && make install)
+  if [ -d "$HEX2BIN_DIR" ]; then
+    (cd $HEX2BIN_DIR && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" "${KWFLAGS_HEX2BIN}" make)
+    if [ $? -ne 0 ]; then echo "Failed to make hex2bin"; exit 1; fi
+    (cd $HEX2BIN_DIR && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make install)
+    if [ $? -ne 0 ]; then echo "Failed to make install hex2bin"; exit 2; fi
   fi
 }
 
 install_hex2bin
+rm -rf dist-clean
+mkdir dist-clean
+cp -r $PREFIX dist-clean

@@ -19,6 +19,8 @@
  * http://www.opensource.org/licenses/cpl1.0.php.
  */
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <limits.h>
 #include <ctype.h>
 #include <fcntl.h>
