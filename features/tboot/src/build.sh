@@ -19,6 +19,8 @@ generate_binary() {
   if yum_detect; then
     sudo yum install -y rpm-build
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
+    tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
+    mv "${tboot_tgz}" "${TBOOT}.tar.gz"
     sudo rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
     classifier=$(echo "${tboot_rpm}" | awk -F'/' '{print $2}')
@@ -28,8 +30,8 @@ generate_binary() {
   elif aptget_detect; then
     sudo apt-get install -y packaging-dev debhelper libtspi-dev
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
-    TBOOT_TGZ=$(find . -name ${TBOOT}*-sources.tgz)
-    tar fxz "${TBOOT_TGZ}"
+    tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
+    tar fxz "${tboot_tgz}"
     mv debian "${TBOOT}"
     (cd "${TBOOT}" && sudo debuild -b -uc -us)
     tboot_deb=$(find . -name tboot*.deb)
