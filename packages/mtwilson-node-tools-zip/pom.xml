@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.intel.mtwilson</groupId>
+    <artifactId>mtwilson-node-tools-zip</artifactId>
+    
+    <parent>
+        <groupId>com.intel.mtwilson.maven</groupId>
+        <artifactId>mtwilson-maven-package-zip</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+    
+    <packaging>pom</packaging>
+    
+    <build>
+        <plugins>
+            <!-- copy  dependencies to the target folder -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeClassifiers>sources</excludeClassifiers>
+                            <outputDirectory>${project.build.directory}/content</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hex2bin</groupId>
+            <artifactId>hex2bin-dist</artifactId>
+            <version>1.0</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>gov.niarl.tpm</groupId>
+            <artifactId>niarl-tpm-module-dist</artifactId>
+            <version>1.0</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openssl</groupId>
+            <artifactId>openssl-dist</artifactId>
+            <version>1.0.2a</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.tpmquotetools</groupId>
+            <artifactId>tpm-agent-tools-dist</artifactId>
+            <version>1.0</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.tpmquotetools</groupId>
+            <artifactId>tpm-quote-tools-dist</artifactId>
+            <version>1.0.2</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.trousers</groupId>
+            <artifactId>tpm-tools-dist</artifactId>
+            <version>1.3.8</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.trousers</groupId>
+            <artifactId>trousers-dist</artifactId>
+            <version>0.3.13</version>
+            <type>zip</type>
+            <classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+    </dependencies>
+    
+</project>

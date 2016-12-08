@@ -1,0 +1,16 @@
+Source: tboot
+Section: admin
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Gang Wei <gang.wei@intel.com>
+Build-Depends: debhelper (>= 8.0.0), libtspi-dev, libssl-dev
+Standards-Version: 3.9.3
+Homepage: http://sourceforge.net/projects/tboot/
+
+Package: tboot
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Trusted Boot (tboot)
+ Trusted Boot (tboot) is an open source, pre-kernel/VMM module that uses
+ Intel Trusted Execution Technology (Intel TXT) to perform a measured
+ and verified launch of an OS kernel/VMM.

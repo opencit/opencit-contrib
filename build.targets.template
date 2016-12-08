@@ -1,0 +1,13 @@
+# NOTES:
+# + this file is a template
+# + the real build.targets file is generated from this template on each build
+# + the LINUX_TARGET gets replaced according to current build settings
+# + default value of LINUX_TARGET is "generic"
+# A successful build produces the following files:
+hex2bin/target/hex2bin-dist-1.0-${LINUX_TARGET}.zip
+niarl-tpm-module/target/niarl-tpm-module-dist-1.0-${LINUX_TARGET}.zip
+openssl/target/openssl-dist-1.0.2a-${LINUX_TARGET}.zip
+tpm-agent-tools/target/tpm-agent-tools-dist-1.0-${LINUX_TARGET}.zip
+tpm-quote-tools/target/tpm-quote-tools-dist-1.0.2-${LINUX_TARGET}.zip
+tpm-tools/target/tpm-tools-dist-1.3.8-${LINUX_TARGET}.zip
+trousers/target/trousers-dist-0.3.13-${LINUX_TARGET}.zip
