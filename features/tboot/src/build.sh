@@ -17,7 +17,7 @@ aptget_detect() {
 generate_binary() {
   # RHEL
   if yum_detect; then
-    sudo yum install -y rpmbuild
+    sudo yum install -y rpm-build
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     sudo rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
