@@ -23,12 +23,10 @@ install_openssl() {
     if [ $? -ne 0 ]; then echo "Failed to make openssl"; exit 2; fi
     (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make install)
     if [ $? -ne 0 ]; then echo "Failed to make install openssl"; exit 3; fi
-    #if [ -d /etc/ld.so.conf.d ]; then
-      #echo /usr/local/ssl/lib/ > /etc/ld.so.conf.d/openssl.conf
-	  #echo $PREFIX/lib > /etc/ld.so.conf.d/openssl.conf
-    #fi
-    # Root can use 'ldconfig', so when compiling as non-root, we skip it 
-    #ldconfig
+    if [ -d /etc/ld.so.conf.d ]; then
+      echo $PREFIX/lib | sudo -n tee /etc/ld.so.conf.d/openssl.conf
+    fi
+    sudo -n ldconfig
   fi
 }
 

@@ -18,12 +18,12 @@ generate_binary() {
   # RHEL
   if yum_detect; then
     echo -n "rhel" > distro
-    sudo yum install -y rpm-build
+    sudo -n yum install -y rpm-build
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
     mv "${tboot_tgz}" "${TBOOT}.tar.gz"
-    sudo rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
-    sudo chown -R ${USER}:${USER} .
+    sudo -n rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
+    sudo -n chown -R ${USER}:${USER} .
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
     classifier=$(echo "${tboot_rpm}" | awk -F'/' '{print $2}')
     echo -n "${classifier}" > classifier
@@ -33,13 +33,13 @@ generate_binary() {
   # UBUNTU
   elif aptget_detect; then
     echo -n "ubuntu" > distro
-    sudo apt-get install -y packaging-dev debhelper libtspi-dev
+    sudo -n apt-get install -y packaging-dev debhelper libtspi-dev
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
     tar fxz "${tboot_tgz}"
     mv debian "${TBOOT}"
-    (cd "${TBOOT}" && sudo debuild -b -uc -us)
-    sudo chown -R ${USER}:${USER} .
+    (cd "${TBOOT}" && sudo -n debuild -b -uc -us)
+    sudo -n chown -R ${USER}:${USER} .
     tboot_deb=$(find . -name tboot*.deb)
     classifier=$(echo "${tboot_deb%.*}" | awk -F'_' '{print $3}')
     echo -n "${classifier}" > classifier
