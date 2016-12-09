@@ -22,6 +22,7 @@ generate_binary() {
     tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
     mv "${tboot_tgz}" "${TBOOT}.tar.gz"
     sudo rpmbuild -bb "rpm/tboot.spec" --define "_sourcedir $PWD" --define "_rpmdir $PWD" --nodeps
+    chown -R ${USER}:${USER} .
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
     classifier=$(echo "${tboot_rpm}" | awk -F'/' '{print $2}')
     mvn install:install-file -Dfile="${tboot_rpm}" -DgroupId=net.sourceforge.tboot -DartifactId=tboot -Dversion="${TBOOT_VERSION}" -Dpackaging=rpm -Dclassifier="${classifier}"
@@ -34,6 +35,7 @@ generate_binary() {
     tar fxz "${tboot_tgz}"
     mv debian "${TBOOT}"
     (cd "${TBOOT}" && sudo debuild -b -uc -us)
+    chown -R ${USER}:${USER} .
     tboot_deb=$(find . -name tboot*.deb)
     classifier=$(echo "${tboot_deb%.*}" | awk -F'_' '{print $3}')
     mvn install:install-file -Dfile="${tboot_deb}" -DgroupId="net.sourceforge.tboot" -DartifactId="tboot" -Dversion="${TBOOT_VERSION}" -Dpackaging="deb" -Dclassifier="${classifier}"
