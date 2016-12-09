@@ -17,6 +17,7 @@ aptget_detect() {
 generate_binary() {
   # RHEL
   if yum_detect; then
+    echo -n "rhel" > distro
     sudo yum install -y rpm-build
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
@@ -25,10 +26,13 @@ generate_binary() {
     sudo chown -R ${USER}:${USER} .
     tboot_rpm=$(find . -name ${TBOOT}*.rpm)
     classifier=$(echo "${tboot_rpm}" | awk -F'/' '{print $2}')
-    mvn install:install-file -Dfile="${tboot_rpm}" -DgroupId=net.sourceforge.tboot -DartifactId=tboot -Dversion="${TBOOT_VERSION}" -Dpackaging=rpm -Dclassifier="${classifier}"
+    echo -n "${classifier}" > classifier
+	mv "${tboot_rpm}" "${TBOOT}-${classifier}.rpm"
+    #mvn install:install-file -Dfile="${tboot_rpm}" -DgroupId=net.sourceforge.tboot -DartifactId=tboot -Dversion="${TBOOT_VERSION}" -Dpackaging=rpm -Dclassifier="${classifier}"
     return
   # UBUNTU
   elif aptget_detect; then
+    echo -n "ubuntu" > distro
     sudo apt-get install -y packaging-dev debhelper libtspi-dev
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     tboot_tgz=$(find . -name ${TBOOT}*-sources.tgz)
@@ -38,7 +42,9 @@ generate_binary() {
     sudo chown -R ${USER}:${USER} .
     tboot_deb=$(find . -name tboot*.deb)
     classifier=$(echo "${tboot_deb%.*}" | awk -F'_' '{print $3}')
-    mvn install:install-file -Dfile="${tboot_deb}" -DgroupId="net.sourceforge.tboot" -DartifactId="tboot" -Dversion="${TBOOT_VERSION}" -Dpackaging="deb" -Dclassifier="${classifier}"
+    echo -n "${classifier}" > classifier
+    mv "${tboot_deb}" "${TBOOT}-${classifier}.deb"
+    #mvn install:install-file -Dfile="${tboot_deb}" -DgroupId="net.sourceforge.tboot" -DartifactId="tboot" -Dversion="${TBOOT_VERSION}" -Dpackaging="deb" -Dclassifier="${classifier}"
     return
   fi
   return 2
