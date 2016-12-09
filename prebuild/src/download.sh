@@ -36,12 +36,12 @@ aptget_detect() {
 download_prerequisites() {
   # RHEL
   if yum_detect; then
-    sudo yum install -y wget
+    sudo -n yum install -y wget
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     return
   # UBUNTU
   elif aptget_detect; then
-    sudo apt-get install -y wget
+    sudo -n apt-get install -y wget
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     return
   fi
