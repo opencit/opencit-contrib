@@ -14,8 +14,81 @@
     <description>Builds tboot RPM or DEB binary depending on OS distribution</description>
     <packaging>pom</packaging>
     
+    <build>
+        <plugins>
+            <!-- copy all source dependencies (non-transitive) to the target folder for unpacking,
+            copy all distribution dependencies (non-transitive) to the target folder for 
+            unpacking into target/dist -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <excludeTransitive>true</excludeTransitive>
+                            <includeClassifiers>sources</includeClassifiers>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-dist-deps</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <excludeTransitive>false</excludeTransitive>
+                            <excludeClassifiers>sources</excludeClassifiers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+                    
+            <!-- copy the build script and any other locally defined resources (such as patch files) -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-source-directories</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>            
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.tboot</groupId>
+            <artifactId>tboot</artifactId>
+            <version>1.9.4</version>
+            <classifier>sources</classifier>
+            <type>tgz</type>
+        </dependency>
+    </dependencies>
+    
     <profiles>
         <profile>
+            <id>unix-run-build-script-and-attach-artifact</id>
             <activation>
                 <os>
                     <family>unix</family>
@@ -24,64 +97,6 @@
             
             <build>
                 <plugins>
-                    <!-- copy all source dependencies (non-transitive) to the target folder for unpacking,
-                    copy all distribution dependencies (non-transitive) to the target folder for 
-                    unpacking into target/dist -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-sources</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <excludeTransitive>true</excludeTransitive>
-                                    <includeClassifiers>sources</includeClassifiers>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>copy-dist-deps</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <excludeTransitive>false</excludeTransitive>
-                                    <excludeClassifiers>sources</excludeClassifiers>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    
-                    <!-- copy the build script and any other locally defined resources (such as patch files) -->
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>2.7</version>
-                        <executions>
-                            <execution>
-                                <id>copy-source-directories</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>src</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>            
-                            </execution>
-                        </executions>
-                    </plugin>
-                    
                     <!-- Generate patches for Policy Agent hooks -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -104,6 +119,34 @@
                                     </target>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>attach-artifact</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+                                        <loadfile property="distro" srcFile="${project.build.directory}/distro"/>
+                                        <loadfile property="classifier" srcFile="${project.build.directory}/classifier"/>
+                                        <echo>DISTRO=${distro}</echo>
+                                        <echo>CLASSIFIER=${classifier}</echo>
+                                        <if>
+                                            <contains string="${distro}" substring="rhel" casesensitive="no"/>
+                                            <then>
+                                                <attachartifact file="${project.build.directory}/${project.artifactId}-${project.version}-${classifier}.rpm" classifier="${classifier}" type="rpm"/>
+                                            </then>
+                                        </if>
+                                        <if>
+                                            <contains string="${distro}" substring="ubuntu" casesensitive="no"/>
+                                            <then>
+                                                <attachartifact file="${project.build.directory}/${project.artifactId}-${project.version}-${classifier}.deb" classifier="${classifier}" type="deb"/>
+                                            </then>
+                                        </if>
+                                    </tasks>
+                                </configuration>
+                            </execution>
                         </executions>
                         <dependencies>
                             <dependency>
@@ -120,16 +163,6 @@
                     </plugin>
                 </plugins>
             </build>
-            
-            <dependencies>
-                <dependency>
-                    <groupId>net.sourceforge.tboot</groupId>
-                    <artifactId>tboot</artifactId>
-                    <version>1.9.4</version>
-                    <classifier>sources</classifier>
-                    <type>tgz</type>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
     
