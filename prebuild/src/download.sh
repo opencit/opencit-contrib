@@ -36,12 +36,12 @@ aptget_detect() {
 download_prerequisites() {
   # RHEL
   if yum_detect; then
-    yum -y install wget
+    sudo yum -y install wget
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     return
   # UBUNTU
   elif aptget_detect; then
-    apt-get -y install wget
+    sudo apt-get -y install wget
     if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package installer"; return 1; fi
     return
   fi
@@ -136,13 +136,19 @@ download_and_maven_install_tboot() {
 
 echo "Downloading and installing prerequisites..."
 download_prerequisites
+if [ $? -ne 0 ]; then echo "Failed to install prerequisites through package manager"; exit 1; fi
 echo "Downloading and maven installing openssl..."
 download_and_maven_install_openssl
+if [ $? -ne 0 ]; then echo "Failed to download and maven install openssl"; exit 2; fi
 echo "Downloading and maven installing trousers..."
 download_and_maven_install_trousers
+if [ $? -ne 0 ]; then echo "Failed to download and maven install trousers"; exit 3; fi
 echo "Downloading and maven installing TPM quote tools..."
 download_and_maven_install_tpm_quote_tools
+if [ $? -ne 0 ]; then echo "Failed to download and maven install TPM quote tools"; exit 4; fi
 echo "Downloading and maven installing TPM tools..."
 download_and_maven_install_tpm_tools
+if [ $? -ne 0 ]; then echo "Failed to download and maven install TPM tools"; exit 5; fi
 echo "Downloading and maven installing tboot..."
 download_and_maven_install_tboot
+if [ $? -ne 0 ]; then echo "Failed to download and maven install tboot"; exit 6; fi
