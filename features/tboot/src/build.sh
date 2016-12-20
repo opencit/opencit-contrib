@@ -1,5 +1,5 @@
 #!/bin/bash
-TBOOT_VERSION="1.9.4"
+TBOOT_VERSION="1.9.5"
 TBOOT="tboot-${TBOOT_VERSION}"
 
 
