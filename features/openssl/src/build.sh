@@ -15,8 +15,10 @@ install_openssl() {
   if [ -n "$OPENSSL_FILE" ] && [ -f "$OPENSSL_FILE" ]; then
     rm -rf $OPENSSL
     tar fxz $OPENSSL_FILE
-	# options "no-idea no-mdc2 no-rc5" disable support for these patented algorithms
-	# --enable-cross-compile
+    (cd $OPENSSL && patch -p1 <../version-script.patch)
+    if [ $? -ne 0 ]; then echo "Failed to patch openssl with version information"; exit 9; fi
+    # options "no-idea no-mdc2 no-rc5" disable support for these patented algorithms
+    # --enable-cross-compile
     (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ./config --shared --prefix=$PREFIX --openssldir=$PREFIX no-idea no-mdc2 no-rc5)
     if [ $? -ne 0 ]; then echo "Failed to configure openssl"; exit 1; fi
     (cd $OPENSSL && CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" make)

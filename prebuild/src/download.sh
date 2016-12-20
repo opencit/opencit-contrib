@@ -17,7 +17,7 @@ TPM_TOOLS_VERSION="1.3.8"
 TPM_TOOLS="tpm-tools-${TPM_TOOLS_VERSION}"
 TPM_TOOLS_URL="http://downloads.sourceforge.net/project/trousers/tpm-tools/${TPM_TOOLS_VERSION}/${TPM_TOOLS}.tar.gz"
 
-TBOOT_VERSION="1.9.4"
+TBOOT_VERSION="1.9.5"
 TBOOT="tboot-${TBOOT_VERSION}"
 TBOOT_URL="http://downloads.sourceforge.net/project/tboot/tboot/${TBOOT}.tar.gz"
 
