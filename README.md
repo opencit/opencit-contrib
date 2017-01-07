@@ -51,6 +51,16 @@ values of ANT_HOME and MAVEN_HOME for your system:
     export MAVEN_HOME=/usr/share/apache-maven-3.3.9
     export PATH=$ANT_HOME/bin:$MAVEN_HOME/bin:$PATH
 
+# Before you build
+
+To download required sources, run this command:
+
+    ant prebuild
+
+You need to do this step once before the first time
+you build the project, and again whenever there is a
+change in the version of any open-source dependency.
+
 # Automated build
 
 To build the project, run this command:
