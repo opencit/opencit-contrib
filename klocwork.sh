@@ -13,7 +13,7 @@ export TABLES_DIRECTORY=/home/robot/kwtables
 export KLOCWORK_PROJECT=dcg_security-contrib
 export KLOCWORK_SERVER_URL=https://klocwork-jf18.devtools.intel.com:8160
 export MAIN_PROJECT_SPEC=contrib.out
-export KW_HOME=/home/robot/kw10.4/bin
+export KW_HOME=/home/robot/kw10.4/bin  
 PATH=$PATH:$KW_HOME
 
 #Declare Associative Array for c projects
@@ -193,9 +193,7 @@ checkCommands
 execPrereqCheck
 if [ $check -eq 1 ]; then 
 exit -1; fi
-#if [ ! execPrereqCheck ]; then 
-#exit -1; fi 
-#	execPrereqCheck
+
 	echo "Running Initialize..."
 	initialize
 	echo "Running Generate Build Specs..."
