@@ -126,14 +126,14 @@
 		</exec>
     </target>
 
-	   <target name="build-with-scans">
-	        <parallel>
-        	    <exec executable="ant">
-	                <arg value="all"/>
-        	    </exec>
-	            <exec executable="ant">
-        	        <arg value="klocwork"/>
-	            </exec>
-	        </parallel>
-	    </target>
+    <target name="build-with-scans">
+        <parallel>
+            <exec executable="ant">
+                <arg value="all"/>
+            </exec>
+            <exec executable="ant">
+                <arg value="klocwork"/>
+            </exec>
+        </parallel>
+    </target>
 </project>
