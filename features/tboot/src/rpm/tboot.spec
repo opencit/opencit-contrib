@@ -1,6 +1,6 @@
 Summary:        Performs a verified launch using Intel TXT
 Name:           tboot
-Version:        1.9.4
+Version:        1.9.5
 Release:        2%{?dist}
 Epoch:          1
 
@@ -87,6 +87,27 @@ rm -rf $RPM_BUILD_ROOT
 /boot/tboot-syms
 
 %changelog
+* Fri Dec 16 2016 Ning Sun <ning.sun@intel.com> - 1:1.9.5-1
+- Add 2nd generation of LCP creation tool source codes for TPM 2.0
+  platforms.
+- Add user guide for 2nd generation LCP creation tool
+- Provide workaround for Intel PTT(Platform Trust Technology) & Linux
+  PTT driver.
+- Add new fields in Linux kernel header struct to accommodate Linux
+  kernel new capabilities.
+- Fix a pointer dereference regression in the tboot native Linux loader
+  which manifests itself as a system reset.
+- Fix the issue of overwriting tboot when the loaded elf kernel is
+  located below tboot.
+- Add support to release TPM localities when tboot exits to linux
+  kernel.
+- Fix the evtlog dump function for tpm2 case.
+- Initiaize kernel header comdline buffer before copying kernel cmdline
+  arguments to the buffer to avoid random 
+- data at end of the original cmdline contents.
+- Move tpm_detect() to an earlier stage so as to get tpm interface
+  initialized before checking TXT platform capabilities.
+
 * Tue Aug 09 2016 Tony Camuso <tcamuso@redhat.com> - 1:1.9.4-2
 - Test for UEFI system with /sys/firmware/efi, rather than looking in
   the boot directory for an efi directory.
