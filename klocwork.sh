@@ -20,11 +20,10 @@ PATH=$PATH:$KW_HOME
 declare -A projectsArray
 check=0
 #Assign key value pairs, which correspond to [specFileName] = projectPath
-projectsArray[hex2bin_src.out]="features/hex2bin/src/c"
-projectsArray[hex2bin_target.out]="features/hex2bin/target/c"
-projectsArray[niarl-tpm-module.out]="features/niarl-tpm-module/src/c++"
-projectsArray[tpm-agent-tools.out]="features/tpm-agent-tools/src"
-projectsArray[tpm-tools-additions.out]="/features/tpm-tools/src/1.3.8/additions"
+projectsArray[contrib_hex2bin.out]="features/hex2bin"
+projectsArray[contrib_trousers.out]="features/trousers"
+projectsArray[contrib_hex2bin.out]="features/niarl-tpm-module"
+projectsArray[contrib_tpm_agent_tools.out]="/features/tpm-agent-tools"
 
 
 
@@ -36,7 +35,6 @@ initialize() {
 
 generateBuildSpecs() {
    ant ready clean
-   kwmaven --output "${BUILD_SPECS_DIRECTORY}/${MAIN_PROJECT_SPEC}" -DskipTests=true install
 
    #Iterate through each c project defined in cProjects string
    for project in "${!projectsArray[@]}"; do
@@ -51,7 +49,7 @@ generateBuildSpecs() {
 
 buildProject() {
    #Construct the kwbuildproject command with the cprojects appended
-   kwBuildProjectCommand="kwbuildproject --url \"${KLOCWORK_SERVER_URL}/${KLOCWORK_PROJECT}\" --tables-directory \"${TABLES_DIRECTORY}\" --force \"${BUILD_SPECS_DIRECTORY}/$MAIN_PROJECT_SPEC\""
+   kwBuildProjectCommand="kwbuildproject --url \"${KLOCWORK_SERVER_URL}/${KLOCWORK_PROJECT}\" --tables-directory \"${TABLES_DIRECTORY}\" --force "
    
    for project in "${!projectsArray[@]}"; do
       IFS=':' read -r -a projectArray <<< "$project"
