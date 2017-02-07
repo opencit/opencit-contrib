@@ -113,6 +113,18 @@ static void help(const char* aCmd)
 		     _("The password is provided in hex-encoded format"));
 }
 
+static float getTPMVersion() {
+    FILE *ptr_file;
+    char buf[4];
+    ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
+    if (!ptr_file)
+        return 0.0;
+    fgets(buf, 4, ptr_file);
+    buf[4] = '\0';
+    fclose(ptr_file);
+    return atof(buf);
+}
+
 int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
 	TSS_HTPM        hTPM; 
@@ -138,7 +150,7 @@ int main(int argc, char **argv) {
 	UINT32			lengthKeypasswordBytes;
 
 	int             exitCode = -1;
-	
+	float           tpmVersion = 0.0;
 	struct option hOpts[] = {
 		{"infile"      , required_argument, NULL, 'i'},
 		{"keyfile"       , required_argument, NULL, 'k'},
@@ -155,7 +167,23 @@ int main(int argc, char **argv) {
 		exitCode = -1;
 		goto out;
 	}
-	
+
+        tpmVersion = getTPMVersion();
+        if (tpmVersion == 0.0){
+            exitCode = -1;
+            goto out;
+        }
+        //If we are on TPM2.0 we execute a separate script, otherwise, we continue regular execution
+        if (tpmVersion == 2.0){
+            char pubFile[]="/opt/trustagent/configuration/bindingkey.pub";
+            char privFile[] ="/opt/trustagent/configuration/bindingkey.blob";
+            char command[1024] = "";
+            snprintf(command,1024,"/opt/trustagent/bin/tpm2-unbindaeskey.sh %s %s %s %s",filenameEncryptedInput,filenamePlaintextOutput,pubFile,privFile);
+            system(command);     
+            exitCode = 0;
+            goto out;
+        }
+    
 	/* initialize tpm context */
 	CATCH_TSS_ERROR( Tspi_Context_Create(&hContext) );
 	CATCH_TSS_ERROR( Tspi_Context_Connect(hContext, NULL) );
