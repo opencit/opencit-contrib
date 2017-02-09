@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
             //char signatureHash[] = "/tmp/hash.sig";
             //system("/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s", pHandle, pubFile, privFile, inputHash, signatureHash);
 			char command[1024] = "";
-            snprintf(command,1024,"/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s %s", pHandle, pubFile, keyfile, infile, outfile);
+            snprintf(command,1024,"/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s %s", pHandle, pubFile, filenamePrivatekey, filenameInput, filenameOutput);
             system(command);     
             //system("/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s", pHandle, pubFile, keyfile, infile, outfile);
             
@@ -308,7 +308,6 @@ int main(int argc, char **argv) {
 	if (filePrivatekey != NULL) { fclose(filePrivatekey); }
 	if (fileInput != NULL) { fclose(fileInput); }
 	if (fileOutput != NULL) { fclose(fileOutput); }
-        if (tpm_versionfile != NULL) { fclose(tpm_versionfile); }
 	if( passwordBytes) { free(passwordBytes); }
 	if( keypasswordBytes) { free(keypasswordBytes); }
 	if( hKey ) { Tspi_Context_CloseObject(hContext, hKey); }
