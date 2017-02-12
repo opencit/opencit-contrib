@@ -126,6 +126,17 @@ static void help(const char* aCmd)
 		     _("Load keys using NIARL style"));
 }
 
+float getTPMVersion() {
+    FILE *ptr_file;
+    char buf[4];
+    ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
+    if (!ptr_file)
+        return 0.0;
+    fgets(buf, 4, ptr_file);
+    buf[4] = '\0';
+    fclose(ptr_file);
+    return atof(buf);
+} 
 int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
 	TSS_HTPM        hTPM; 
@@ -152,7 +163,7 @@ int main(int argc, char **argv) {
 	UINT32			lengthKeypasswordBytes;
 	int             i;
 	int             exitCode = -1;
-	
+	float			tpmVersion = 0.0;
 	struct option hOpts[] = {
 		{"infile"      , required_argument, NULL, 'i'},
 		{"keyfile"       , required_argument, NULL, 'k'},
@@ -170,6 +181,26 @@ int main(int argc, char **argv) {
 		exitCode = -1;
 		goto out;
 	}
+        tpmVersion = getTPMVersion();
+        if (tpmVersion == 0.0){
+            exitCode = -1;
+            goto out;
+        }
+        if (tpmVersion == 2.0){
+            char pHandle[] = "0x81000000";
+            char pubFile[]="/opt/trustagent/configuration/signingkey.pub";
+            char privFile[]="/opt/trustagent/configuration/signingkey.blob";
+            //char inputHash[]="/tmp/hash.data";
+            //char signatureHash[] = "/tmp/hash.sig";
+            //system("/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s", pHandle, pubFile, privFile, inputHash, signatureHash);
+			char command[1024] = "";
+            snprintf(command,1024,"/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s %s", pHandle, pubFile, filenamePrivatekey, filenameInput, filenameOutput);
+            system(command);     
+            //system("/opt/trustagent/bin/tpm2-signdata.sh %s %s %s %s", pHandle, pubFile, keyfile, infile, outfile);
+            
+            exitCode = 0;
+            goto out;
+        } 
 
 	/* initialize tpm context */
 	CATCH_TSS_ERROR( Tspi_Context_Create(&hContext) );
@@ -188,7 +219,7 @@ int main(int argc, char **argv) {
 	fseek (filePrivatekey, 0, SEEK_END);
 	lengthPrivatekeyFile = ftell (filePrivatekey);
 	fseek (filePrivatekey, 0, SEEK_SET);
-	contentPrivatekeyFile = malloc (lengthPrivatekeyFile);
+	CATCH_NULL(contentPrivatekeyFile = malloc (lengthPrivatekeyFile));
 	CATCH_ERROR( fread(contentPrivatekeyFile, 1, lengthPrivatekeyFile, filePrivatekey) != lengthPrivatekeyFile );
 	fclose(filePrivatekey);
 	filePrivatekey = NULL;
@@ -244,7 +275,7 @@ int main(int argc, char **argv) {
 	fseek (fileInput, 0, SEEK_END);
 	lengthInputFile = ftell (fileInput);
 	fseek (fileInput, 0, SEEK_SET);
-	contentInputFile = malloc (lengthInputFile);
+	CATCH_NULL(contentInputFile = malloc (lengthInputFile));
 	CATCH_ERROR( fread(contentInputFile, 1, lengthInputFile, fileInput) != lengthInputFile );
 	fclose(fileInput);
 	fileInput = NULL;
@@ -274,6 +305,9 @@ int main(int argc, char **argv) {
 	exitCode = 0;
 	
 	out_close:
+	if (filePrivatekey != NULL) { fclose(filePrivatekey); }
+	if (fileInput != NULL) { fclose(fileInput); }
+	if (fileOutput != NULL) { fclose(fileOutput); }
 	if( passwordBytes) { free(passwordBytes); }
 	if( keypasswordBytes) { free(keypasswordBytes); }
 	if( hKey ) { Tspi_Context_CloseObject(hContext, hKey); }
@@ -281,5 +315,7 @@ int main(int argc, char **argv) {
 	Tspi_Context_Close(hContext);
 
 	out:
+        free(contentPrivatekeyFile);
+        free(contentInputFile);
 	return exitCode;
 }
