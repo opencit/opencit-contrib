@@ -149,10 +149,10 @@ int main(int argc, char **argv) {
 	TSS_RESULT      result;
 	BYTE            WELL_KNOWN_SECRET[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;
 	UINT32          lengthPrivatekeyFile;
-	BYTE            *contentPrivatekeyFile;
+	BYTE            *contentPrivatekeyFile = NULL;
 	FILE            *filePrivatekey;
 	UINT32          lengthInputFile;
-	BYTE            *contentInputFile;
+	BYTE            *contentInputFile = NULL;
 	FILE            *fileInput;
 	UINT32          lengthSignatureData;
 	BYTE            *signatureData;
@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
 	Tspi_Context_Close(hContext);
 
 	out:
-        free(contentPrivatekeyFile);
-        free(contentInputFile);
+	if (contentPrivatekeyFile) { free(contentPrivatekeyFile); }
+	if (contentInputFile) { free(contentInputFile); }
 	return exitCode;
 }
