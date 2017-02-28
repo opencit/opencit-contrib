@@ -178,9 +178,13 @@ int main(int argc, char **argv) {
             char pubFile[]="/opt/trustagent/configuration/bindingkey.pub";
             char privFile[] ="/opt/trustagent/configuration/bindingkey.blob";
             char command[1024] = "";
-            snprintf(command,1024,"/opt/trustagent/bin/tpm2-unbindaeskey.sh %s %s %s %s",filenameEncryptedInput,filenamePlaintextOutput,pubFile,privFile);
-            system(command);     
-            exitCode = 0;
+	    if( strlen(filenamePlaintextOutput) > 0 ) {
+              snprintf(command,1024,"/opt/trustagent/bin/tpm2-unbindaeskey.sh %s %s",filenameEncryptedInput,filenamePlaintextOutput);
+	    }
+ 	    else {
+              snprintf(command,1024,"/opt/trustagent/bin/tpm2-unbindaeskey.sh %s",filenameEncryptedInput);
+	    }
+            exitCode = system(command);     
             goto out;
         }
     
