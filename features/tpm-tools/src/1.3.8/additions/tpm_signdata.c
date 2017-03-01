@@ -22,6 +22,7 @@
 #include <tss/tss_typedef.h>
 #include <tss/tss_structs.h>
 #include <tss/tpm.h>
+#include <openssl/sha.h>
 
 #include "tpm_utils.h"
 #include "tpm_tspi.h"
@@ -109,7 +110,7 @@ static void help(const char* aCmd)
 {
 	logCmdHelp(aCmd);
 	logCmdOption("-i, --infile",
-		     _("Input file containing hash to sign"));
+		     _("Input file containing content to be digested"));
 	logCmdOption("-k, --keyfile",
 		     _("Private key blob file containing the TPM signing key"));
 	logCmdOption("-o, --outfile",
@@ -151,6 +152,7 @@ int main(int argc, char **argv) {
 	UINT32          lengthPrivatekeyFile;
 	BYTE            *contentPrivatekeyFile = NULL;
 	FILE            *filePrivatekey;
+	BYTE            signedInfoHash[SHA_DIGEST_LENGTH]; // == 20
 	UINT32          lengthInputFile;
 	BYTE            *contentInputFile = NULL;
 	FILE            *fileInput;
@@ -280,11 +282,14 @@ int main(int argc, char **argv) {
 	fclose(fileInput);
 	fileInput = NULL;
 	
+	/* generate the SHA1 digest of the signed info content file */
+	SHA1(contentInputFile, lengthInputFile, signedInfoHash);
+	
 	/* create an object to store the hash to sign */
 	CATCH_TSS_ERROR( Tspi_Context_CreateObject(hContext, TSS_OBJECT_TYPE_HASH, TSS_HASH_SHA1, &hHash) );
 	
 	/* set the input hash in the hash object */
-	CATCH_TSS_ERROR( Tspi_Hash_SetHashValue(hHash, lengthInputFile, contentInputFile) );
+	CATCH_TSS_ERROR( Tspi_Hash_SetHashValue(hHash, strlen(signedInfoHash), signedInfoHash) );
 	
 	/* perform the signature */
 	CATCH_TSS_ERROR( Tspi_Hash_Sign(hHash, hKey, &lengthSignatureData, &signatureData) );
