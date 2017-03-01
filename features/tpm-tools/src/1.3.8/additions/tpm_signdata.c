@@ -289,7 +289,7 @@ int main(int argc, char **argv) {
 	CATCH_TSS_ERROR( Tspi_Context_CreateObject(hContext, TSS_OBJECT_TYPE_HASH, TSS_HASH_SHA1, &hHash) );
 	
 	/* set the input hash in the hash object */
-	CATCH_TSS_ERROR( Tspi_Hash_SetHashValue(hHash, strlen(signedInfoHash), signedInfoHash) );
+	CATCH_TSS_ERROR( Tspi_Hash_SetHashValue(hHash, SHA_DIGEST_LENGTH, signedInfoHash) );
 	
 	/* perform the signature */
 	CATCH_TSS_ERROR( Tspi_Hash_Sign(hHash, hKey, &lengthSignatureData, &signatureData) );
