@@ -22,7 +22,6 @@
 #include <tss/tss_typedef.h>
 #include <tss/tss_structs.h>
 #include <tss/tpm.h>
-#include <trousers_types.h>
 
 #include "tpm_tspi.h"
 #include "tpm_utils.h"
@@ -130,7 +129,7 @@ int main(int argc, char **argv) {
 	TSS_HTPM        hTPM;
 	TSS_HKEY        hSRK; 
 	TSS_HPOLICY     hSRKPolicy; 
-	TSS_HKEY        hKey = NULL_HKEY; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy; 
 	TSS_FLAG        keyflags;
 	TSS_RESULT      result;
