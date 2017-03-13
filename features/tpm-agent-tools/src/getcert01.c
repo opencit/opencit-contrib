@@ -18,7 +18,7 @@ main ()
         UINT32          blobLen;
         BYTE            *blob;
         UINT32          ekbufLen;
-        BYTE            *ekbuf;
+        BYTE            *ekbuf = NULL;
         unsigned        i;
         int             result;
 
@@ -45,6 +45,10 @@ nvIndex); CKERR;
         }
         ekbufLen = (blob[i+2] << 8) + blob[i+3] + 4;
         ekbuf = malloc(ekbufLen);
+	if(ekbuf == NULL){
+            fprintf (stderr, "Unable to allocate memory for ekbuf\n");
+            exit (1);
+        }
         memcpy (ekbuf, blob+i, blobLen-i);
 //      result = Tspi_Context_FreeMemory (hContext, blob); CKERR;
         offset = blobLen;
@@ -59,17 +63,20 @@ nvIndex); CKERR;
 //              result = Tspi_Context_FreeMemory (hContext, blob); CKERR;
                 offset += blobLen;
                 ekOffset += blobLen;
-                if (ekOffset == ekbufLen)
+                if (ekOffset == ekbufLen){
                         break;
+		}
         }
 
         for (i=0; i<ekbufLen; i++)
                 printf ("%02x%s", ekbuf[i], (i+1)%16?" ":"\n");
 
         printf ("\nSuccess!\n");
+	free(ekbuf);
         return 0;
 
-error:
+error:	
+	free(ekbuf);
         printf ("Failure, error code: 0x%x\n", result);
         return 1;
 }

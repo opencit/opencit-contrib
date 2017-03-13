@@ -58,11 +58,11 @@
 
 extern const char *__progname;
 
-static char filenamePrivatekeyblobOutput[PATH_MAX] = "";
-static char filenamePublickeyOutput[PATH_MAX] = "";
+static char filenamePrivatekeyblobOutput[PATH_MAX+1] = "";
+static char filenamePublickeyOutput[PATH_MAX+1] = "";
 static TSS_FLAG keyType = 0;
 static TSS_FLAG keyAuth = TSS_KEY_NO_AUTHORIZATION;
-static char keypassword[PATH_MAX] = "";
+static char keypassword[PATH_MAX+1] = "";
 static const char *keypasswordEnv;
 static TSS_FLAG keypasswordMode = TSS_SECRET_MODE_PLAIN;
 static BOOL decodeHexPassword = FALSE;
@@ -129,17 +129,17 @@ int main(int argc, char **argv) {
 	TSS_HTPM        hTPM;
 	TSS_HKEY        hSRK; 
 	TSS_HPOLICY     hSRKPolicy; 
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy; 
 	TSS_FLAG        keyflags;
 	TSS_RESULT      result;
 	BYTE            WELL_KNOWN_SECRET[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;
 	UINT32          lengthPublickey;
 	BYTE            *contentPublickey;
-	FILE            *filePublickey;
+	FILE            *filePublickey = NULL;
 	UINT32          lengthPrivatekeyblob;
 	BYTE            *contentPrivatekeyblob;
-	FILE            *filePrivatekeyblob;
+	FILE            *filePrivatekeyblob = NULL;
 	BYTE			*keypasswordBytes = NULL;
 	UINT32			lengthKeypasswordBytes;
 	int             i;
@@ -235,5 +235,9 @@ int main(int argc, char **argv) {
 	Tspi_Context_Close(hContext);
 
 	out:
+	if(filePrivatekeyblob!=NULL)
+		fclose(filePrivatekeyblob);
+	if(filePublickey!=NULL)
+                fclose(filePublickey);
 	return exitCode;
 }

@@ -28,7 +28,7 @@ main (int argc, char **argv)
 	UINT32		offset;
 	UINT32		ekOffset;
 	UINT32		ekbufLen;
-	BYTE		*ekbuf;
+	BYTE		*ekbuf = NULL;
 	BYTE		*blob;
 	UINT32		tag, certType;
 	int		result;
@@ -91,6 +91,10 @@ main (int argc, char **argv)
 
 	/* Read cert from chip in pieces - too large requests may fail */
 	ekbuf = malloc(ekbufLen);
+	if(ekbuf == NULL){
+            fprintf (stderr, "Unable to allocate memory for ekbuf\n");
+            exit (1);
+        }
 	ekOffset = 0;
 	while (ekOffset < ekbufLen) {
 		blobLen = ekbufLen-ekOffset;
@@ -106,12 +110,17 @@ main (int argc, char **argv)
 	fwrite (ekbuf, 1, ekbufLen, f_out);
 	fclose (f_out);
 	printf ("Success!\n");
+	free(ekbuf);
 	return 0;
 
 error:
+	free(ekbuf);
+	fclose (f_out);
 	printf ("Failure, error code: 0x%x\n", result);
 	return 1;
 parseerr:
+	free(ekbuf);
+	fclose (f_out);
 	printf ("Failure, unable to parse certificate store structure\n");
 	return 2;
 }
