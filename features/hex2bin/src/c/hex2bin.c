@@ -131,12 +131,14 @@ int main(int argc, char **argv) {
 		else {
 			err = hexarg2binfile(argv[1], outfile);
 		}
-		fclose(outfile);
+		if(outfile!=NULL)
+			fclose(outfile);
 		return err;
 	}
 	if(argc > 3) {
 		return help();
     }
+    return 0;
 }
 /* Notes:
  * Would be nice to add an option in the future to support hex files with
