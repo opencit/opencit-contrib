@@ -36,7 +36,7 @@
  */
 int read_hex_from_file(FILE *in, BYTE *out, int max) {
 	int count;
-    int b; // one byte buffer
+    	unsigned int b; // one byte buffer
 	int scanerr;
 	int end = 0;
 	for(count=0; count<max; count++) {
@@ -57,7 +57,7 @@ int read_hex_from_file(FILE *in, BYTE *out, int max) {
  */
 int read_hex_from_str(const char *in, BYTE *out, int max) {
 	int count;
-    int b; // one byte buffer
+    	unsigned int b; // one byte buffer
 	int scanerr;
 	for(count=0; count<max; count++) {
 		scanerr = sscanf(in+(count*2), "%2x", &b);
@@ -79,6 +79,7 @@ int extend_sha1(BYTE *current, BYTE *next) {
 	SHA1_Update(&ctx, current, SHA1_LENGTH);
 	SHA1_Update(&ctx, next, SHA1_LENGTH);
 	SHA1_Final(current, &ctx);
+	return 0;
 }
 
 /*
