@@ -181,9 +181,9 @@ main (int ac, char **av)
 	UINT32		npcrMax;
 	UINT32		npcrBytes;
 	UINT32		npcrs = 0;
-	BYTE		*buf;
+	BYTE		*buf = NULL;
 	UINT32		bufLen;
-	BYTE		*bp;
+	BYTE		*bp = NULL;
 	BYTE		*tmpbuf;
 	UINT32		tmpbufLen;
 	BYTE		chalmd[20];
@@ -249,6 +249,10 @@ main (int ac, char **av)
 		bufLen = ftell (f_in);
 		fseek (f_in, 0, SEEK_SET);
 		buf = malloc (bufLen);
+		if(!buf){
+                    fprintf (stderr, "Unable to allocate memory for buf\n");
+                    exit (1);
+		}
 		if (fread(buf, 1, bufLen, f_in) != bufLen) {
 			fprintf (stderr, "Unable to readn file %s\n", chalfile);
 			exit (1);
@@ -273,6 +277,7 @@ main (int ac, char **av)
 	  if (sizeof uuid != fread((void *)&uuid, 1, sizeof uuid, f_aik_uuid_in)) {
 		fprintf(stderr, "Expecting a uuid of %zd bytes in %s\n",
 			sizeof uuid, aikuuidfile);
+		fclose(f_aik_uuid_in);
 		return 1;
 	  }
 	  fclose(f_aik_uuid_in);
@@ -292,6 +297,10 @@ main (int ac, char **av)
 		bufLen = ftell (f_in);
 		fseek (f_in, 0, SEEK_SET);
 		buf = malloc (bufLen);
+		if(!buf){
+                    fprintf (stderr, "Unable to allocate memory for buf\n");
+                    exit (1);
+                }
 		if (fread(buf, 1, bufLen, f_in) != bufLen) {
 			fprintf (stderr, "Unable to read file %s\n", av[1]);
 			exit (1);
@@ -303,12 +312,21 @@ main (int ac, char **av)
 		CKERR2(result,"loading AIK blob");
 		if (pass) {
 			BYTE *binary_password = malloc(sizeof(BYTE)* strlen(pass)/ 2);
+			if(binary_password == NULL){
+                    		fprintf (stderr, "Unable to allocate memory for binary_password\n");
+                    		exit (1);
+                	}	                    
 			convert_niarl_password(pass, binary_password);
 			result = Tspi_Context_CreateObject(hContext, TSS_OBJECT_TYPE_POLICY,
-					TSS_POLICY_USAGE, &hAIKPolicy); CKERR;
+					TSS_POLICY_USAGE, &hAIKPolicy); 
+			if (result != TSS_SUCCESS)
+                    		free(binary_password);
+			CKERR;
 			CKERR2(result,"creating AIK policy");
 			result = Tspi_Policy_SetSecret (hAIKPolicy, TSS_SECRET_MODE_PLAIN,
-					strlen(pass)/2, binary_password); CKERR;
+					strlen(pass)/2, binary_password); 
+			free(binary_password);
+			CKERR;
 			CKERR2(result,"setting AIK secret on AIK policy");
 			result = Tspi_Policy_AssignToObject(hAIKPolicy, hAIK);
 			CKERR2(result,"assigning AIK policy to AIK handle");
@@ -327,6 +345,10 @@ main (int ac, char **av)
 
 	/* Also PCR buffer */
 	buf = malloc (2 + npcrBytes + 4 + 20 * npcrMax);
+	if(buf == NULL){
+        	fprintf (stderr, "Unable to allocate memory for buf\n");
+        	exit (1);
+	}
 	*(UINT16 *)buf = htons(npcrBytes);
 	for (i=0; i<npcrBytes; i++)
 		buf[2+i] = 0;
@@ -405,8 +427,7 @@ main (int ac, char **av)
 	return 0;
 
 error:
-	if(buf != NULL)
-		free(buf);
+	free(bp);
 	fprintf (stderr, "Failure, error code: 0x%x\n", result);
 	return 1;
 }
