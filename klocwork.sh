@@ -34,5 +34,5 @@ uploadResults() {
 
 initialize
 generateBuildSpecs
-buildProject
+buildProject 
 uploadResults
