@@ -129,7 +129,7 @@ static void help(const char* aCmd)
 
 float getTPMVersion() {
     FILE *ptr_file;
-    char buf[4];
+    char buf[5];
     ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
     if (!ptr_file)
         return 0.0;

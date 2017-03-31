@@ -115,7 +115,7 @@ static void help(const char* aCmd)
 
 static float getTPMVersion() {
     FILE *ptr_file;
-    char buf[4];
+    char buf[5];
     ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
     if (!ptr_file)
         return 0.0;
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
 	TSS_HTPM        hTPM; 
 	TSS_HPOLICY     hTPMPolicy;
-	TSS_HKEY        hSRK; 
+	TSS_HKEY        hSRK = 0; 
 	TSS_HPOLICY     hSRKPolicy;
 	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy;
