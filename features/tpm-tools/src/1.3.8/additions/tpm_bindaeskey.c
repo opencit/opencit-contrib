@@ -57,7 +57,7 @@
 
 extern const char *__progname;
 
-static char filenameInput[PATH_MAX] = "";
+static char filenameInput[PATH_MAX+1] = "";
 static char filenameOutput[PATH_MAX] = "";
 static char filenamePublickey[PATH_MAX] = "";
 
@@ -94,7 +94,7 @@ static void help(const char* aCmd)
 
 int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HENCDATA    hEncdata;
 	TSS_RESULT      result;
 	//BYTE            nonsecret[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;

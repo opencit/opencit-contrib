@@ -56,8 +56,8 @@
 
 static char filenameEncryptedInput[PATH_MAX] = "";
 static char filenamePlaintextOutput[PATH_MAX] = "";
-static char filenamePrivatekey[PATH_MAX] = "";
-static char keypassword[PATH_MAX] = "";
+static char filenamePrivatekey[PATH_MAX+1] = "";
+static char keypassword[PATH_MAX+1] = "";
 static const char *keypasswordEnv;
 static TSS_FLAG keypasswordMode = TSS_SECRET_MODE_PLAIN;
 static BOOL decodeHexPassword = FALSE;
@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 	TSS_HPOLICY     hTPMPolicy;
 	TSS_HKEY        hSRK; 
 	TSS_HPOLICY     hSRKPolicy;
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy;
 	TSS_HENCDATA    hEncdata;
 	TSS_HPOLICY     hEncdataPolicy;
