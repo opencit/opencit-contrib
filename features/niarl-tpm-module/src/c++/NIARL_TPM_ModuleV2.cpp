@@ -5124,7 +5124,7 @@ void NIARL_TPM_ModuleV2::get_rand_int()
 		if(b_log)	cerr << ' ' << result << " GET RANDOM" << endl;
 		return_code = result;
 
-	if (numbytes <= UINT_MAX && !randbytes) {
+	if (randbytes != NULL && numbytes <= UINT_MAX) {
 		for(UINT32 i = 0; i < numbytes; i++)
 		{
 			cout << setbase(16) << setw(2) << setfill('0') << (int)randbytes[i];

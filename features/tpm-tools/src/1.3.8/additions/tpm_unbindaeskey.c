@@ -285,6 +285,7 @@ int main(int argc, char **argv) {
 	out:
 	free(contentPrivatekeyFile);
 	free(contentEncryptedInputFile);
+	free(keypasswordBytes);
 	if(filePlaintextOutput!=NULL)
 		fclose(filePlaintextOutput);
 	if(filePrivatekey!=NULL)
