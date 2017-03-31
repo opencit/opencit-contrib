@@ -3,6 +3,8 @@ buildSpecsDirectory="/home/robot/kw_build_specs"
 tablesDirectory="/home/robot/kwtables"
 klocworkProject="dcg_security-contrib"
 klocworkServerUrl="https://klocwork-jf18.devtools.intel.com:8160"
+export KW_HOME=/home/robot/kw11.3/bin
+PATH=$PATH:$KW_HOME
 
 
 initialize() {
