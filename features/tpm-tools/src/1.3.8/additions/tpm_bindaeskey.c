@@ -57,7 +57,7 @@
 
 extern const char *__progname;
 
-static char filenameInput[PATH_MAX] = "";
+static char filenameInput[PATH_MAX+1] = "";
 static char filenameOutput[PATH_MAX] = "";
 static char filenamePublickey[PATH_MAX] = "";
 
