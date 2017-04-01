@@ -62,8 +62,8 @@
 extern const char *__progname;
 
 static char filenameInput[PATH_MAX+1] = "";
-static char filenameOutput[PATH_MAX] = "";
-static char filenamePrivatekey[PATH_MAX] = "";
+static char filenameOutput[PATH_MAX+1] = "";
+static char filenamePrivatekey[PATH_MAX+1] = "";
 static char keypassword[PATH_MAX+1] = "";
 static const char *keypasswordEnv;
 static TSS_FLAG keypasswordMode = TSS_SECRET_MODE_PLAIN;
