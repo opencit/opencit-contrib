@@ -57,9 +57,9 @@
 
 extern const char *__progname;
 
-static char filenameInput[PATH_MAX] = "";
-static char filenameOutput[PATH_MAX] = "";
-static char filenamePublickey[PATH_MAX] = "";
+static char filenameInput[PATH_MAX+1] = "";
+static char filenameOutput[PATH_MAX+1] = "";
+static char filenamePublickey[PATH_MAX+1] = "";
 
 
 static int parse(const int aOpt, const char *aArg)
@@ -94,19 +94,19 @@ static void help(const char* aCmd)
 
 int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HENCDATA    hEncdata;
 	TSS_RESULT      result;
 	//BYTE            nonsecret[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;
 	UINT32          lengthPublickeyFile;
-	BYTE            *contentPublickeyFile;
-	FILE            *filePublickey;
+	BYTE            *contentPublickeyFile = NULL;
+	FILE            *filePublickey = NULL;
 	UINT32          lengthInputFile;
-	BYTE            *contentInputFile;
-	FILE            *fileInput;
+	BYTE            *contentInputFile = NULL;
+	FILE            *fileInput = NULL;
 	UINT32          lengthEncData;
 	BYTE            *encData;
-	FILE            *fileOutput;
+	FILE            *fileOutput = NULL;
 	int             i;
 	int             exitCode = -1;
 	
@@ -133,6 +133,10 @@ int main(int argc, char **argv) {
 	lengthPublickeyFile = ftell (filePublickey);
 	fseek (filePublickey, 0, SEEK_SET);
 	contentPublickeyFile = malloc (lengthPublickeyFile);
+	if(!contentPublickeyFile){
+		fprintf (stderr, "Unable to allocate memory for contentPublickeyFile\n");
+		exit (1);
+	}
 	CATCH_ERROR( fread(contentPublickeyFile, 1, lengthPublickeyFile, filePublickey) != lengthPublickeyFile );
 	fclose(filePublickey);
 	filePublickey = NULL;
@@ -156,6 +160,10 @@ int main(int argc, char **argv) {
 	lengthInputFile = ftell (fileInput);
 	fseek (fileInput, 0, SEEK_SET);
 	contentInputFile = malloc (lengthInputFile);
+	if(!contentInputFile){
+		fprintf (stderr, "Unable to allocate memory for contentInputFile\n");
+		exit (1);
+	}
 	CATCH_ERROR( fread(contentInputFile, 1, lengthInputFile, fileInput) != lengthInputFile );
 	fclose(fileInput);
 	fileInput = NULL;
@@ -183,5 +191,13 @@ int main(int argc, char **argv) {
 	Tspi_Context_Close(hContext);
 
 	out:
+	free(contentInputFile);
+	free(contentPublickeyFile);
+	if(filePublickey!=NULL)
+		fclose(filePublickey);
+	if(fileInput!=NULL)
+		fclose(fileInput);
+	if(fileOutput!=NULL)
+		fclose(fileOutput);
 	return exitCode;
 }
