@@ -239,5 +239,6 @@ int main(int argc, char **argv) {
 		fclose(filePrivatekeyblob);
 	if(filePublickey!=NULL)
                 fclose(filePublickey);
+	free(keypasswordBytes);
 	return exitCode;
 }
