@@ -54,10 +54,10 @@
 		goto out_close; \
 	}
 
-static char filenameEncryptedInput[PATH_MAX] = "";
-static char filenamePlaintextOutput[PATH_MAX] = "";
-static char filenamePrivatekey[PATH_MAX] = "";
-static char keypassword[PATH_MAX] = "";
+static char filenameEncryptedInput[PATH_MAX+1] = "";
+static char filenamePlaintextOutput[PATH_MAX+1] = "";
+static char filenamePrivatekey[PATH_MAX+1] = "";
+static char keypassword[PATH_MAX+1] = "";
 static const char *keypasswordEnv;
 static TSS_FLAG keypasswordMode = TSS_SECRET_MODE_PLAIN;
 static BOOL decodeHexPassword = FALSE;
@@ -115,7 +115,7 @@ static void help(const char* aCmd)
 
 static float getTPMVersion() {
     FILE *ptr_file;
-    char buf[4];
+    char buf[5];
     ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
     if (!ptr_file)
         return 0.0;
@@ -129,23 +129,23 @@ int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
 	TSS_HTPM        hTPM; 
 	TSS_HPOLICY     hTPMPolicy;
-	TSS_HKEY        hSRK; 
+	TSS_HKEY        hSRK = 0; 
 	TSS_HPOLICY     hSRKPolicy;
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy;
 	TSS_HENCDATA    hEncdata;
 	TSS_HPOLICY     hEncdataPolicy;
 	TSS_RESULT      result;
 	BYTE            WELL_KNOWN_SECRET[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;
 	UINT32          lengthPrivatekeyFile;
-	BYTE            *contentPrivatekeyFile;
-	FILE            *filePrivatekey;
+	BYTE            *contentPrivatekeyFile = NULL;
+	FILE            *filePrivatekey = NULL;
 	UINT32          lengthEncryptedInputFile;
-	BYTE            *contentEncryptedInputFile;
-	FILE            *fileEncryptedInput;
+	BYTE            *contentEncryptedInputFile = NULL;
+	FILE            *fileEncryptedInput = NULL;
 	UINT32          lengthPlaintextOutput;
 	BYTE            *plaintextOutput;
-	FILE            *filePlaintextOutput;
+	FILE            *filePlaintextOutput = NULL;
 	BYTE			*keypasswordBytes = NULL;
 	UINT32			lengthKeypasswordBytes;
 
@@ -206,6 +206,10 @@ int main(int argc, char **argv) {
 	lengthPrivatekeyFile = ftell (filePrivatekey);
 	fseek (filePrivatekey, 0, SEEK_SET);
 	contentPrivatekeyFile = malloc (lengthPrivatekeyFile);
+	if(!contentPrivatekeyFile){
+		fprintf (stderr, "Unable to allocate memory for contentPrivatekeyFile\n");
+		exit (1);
+	}
 	CATCH_ERROR( fread(contentPrivatekeyFile, 1, lengthPrivatekeyFile, filePrivatekey) != lengthPrivatekeyFile );
 	fclose(filePrivatekey);
 	filePrivatekey = NULL;
@@ -245,6 +249,10 @@ int main(int argc, char **argv) {
 	lengthEncryptedInputFile = ftell (fileEncryptedInput);
 	fseek (fileEncryptedInput, 0, SEEK_SET);
 	contentEncryptedInputFile = malloc (lengthEncryptedInputFile);
+	if(!contentEncryptedInputFile){
+		fprintf (stderr, "Unable to allocate memory for contentEncryptedInputFile\n");
+		exit (1);
+	}
 	CATCH_ERROR( fread(contentEncryptedInputFile, 1, lengthEncryptedInputFile, fileEncryptedInput) != lengthEncryptedInputFile );
 	fclose(fileEncryptedInput);
 	fileEncryptedInput = NULL;
@@ -275,5 +283,14 @@ int main(int argc, char **argv) {
 	Tspi_Context_Close(hContext);
 
 	out:
+	free(contentPrivatekeyFile);
+	free(contentEncryptedInputFile);
+	free(keypasswordBytes);
+	if(filePlaintextOutput!=NULL)
+		fclose(filePlaintextOutput);
+	if(filePrivatekey!=NULL)
+		fclose(filePrivatekey);
+	if(fileEncryptedInput!=NULL)
+		fclose(fileEncryptedInput);
 	return exitCode;
 }
