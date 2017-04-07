@@ -3,7 +3,7 @@
 TPM_TOOLS_SRC ?= tpm-tools-1.3.8
 CFLAGS += -g -O0 -DLOCALEDIR='"/usr/share/locale"'
 CFLAGS += -I$(TPM_TOOLS_SRC) -I$(TPM_TOOLS_SRC)/include
-CFLAGS += -fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
+CFLAGS += -fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security
 LDFLAGS += -z noexecstack -z relro -z now -pie
 TPM_TOOLS_SRC_FILES = $(TPM_TOOLS_SRC)/lib/tpm_tspi.c $(TPM_TOOLS_SRC)/lib/tpm_utils.c $(TPM_TOOLS_SRC)/lib/tpm_log.c
 
