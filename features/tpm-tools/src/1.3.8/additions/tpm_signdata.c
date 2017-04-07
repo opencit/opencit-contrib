@@ -61,10 +61,10 @@
 
 extern const char *__progname;
 
-static char filenameInput[PATH_MAX] = "";
-static char filenameOutput[PATH_MAX] = "";
-static char filenamePrivatekey[PATH_MAX] = "";
-static char keypassword[PATH_MAX] = "";
+static char filenameInput[PATH_MAX+1] = "";
+static char filenameOutput[PATH_MAX+1] = "";
+static char filenamePrivatekey[PATH_MAX+1] = "";
+static char keypassword[PATH_MAX+1] = "";
 static const char *keypasswordEnv;
 static TSS_FLAG keypasswordMode = TSS_SECRET_MODE_PLAIN;
 static BOOL decodeHexPassword = FALSE;
@@ -129,7 +129,7 @@ static void help(const char* aCmd)
 
 float getTPMVersion() {
     FILE *ptr_file;
-    char buf[4];
+    char buf[5];
     ptr_file = fopen("/opt/trustagent/configuration/tpm-version", "r");
     if (!ptr_file)
         return 0.0;
@@ -142,23 +142,23 @@ int main(int argc, char **argv) {
 	TSS_HCONTEXT    hContext;
 	TSS_HTPM        hTPM; 
 	TSS_HPOLICY     hTPMPolicy;
-	TSS_HKEY        hSRK; 
+	TSS_HKEY        hSRK = 0; 
 	TSS_HPOLICY     hSRKPolicy;
-	TSS_HKEY        hKey; 
+	TSS_HKEY        hKey = 0; 
 	TSS_HPOLICY     hKeyPolicy;
 	TSS_HHASH       hHash;
 	TSS_RESULT      result;
 	BYTE            WELL_KNOWN_SECRET[TCPA_SHA1_160_HASH_LEN] = TSS_WELL_KNOWN_SECRET;
 	UINT32          lengthPrivatekeyFile;
 	BYTE            *contentPrivatekeyFile = NULL;
-	FILE            *filePrivatekey;
+	FILE            *filePrivatekey = NULL;
 	BYTE            signedInfoHash[SHA_DIGEST_LENGTH]; // == 20
 	UINT32          lengthInputFile;
 	BYTE            *contentInputFile = NULL;
-	FILE            *fileInput;
+	FILE            *fileInput = NULL;
 	UINT32          lengthSignatureData;
 	BYTE            *signatureData;
-	FILE            *fileOutput;
+	FILE            *fileOutput = NULL;
 	BYTE			*passwordBytes = NULL;
 	UINT32			lengthPasswordBytes;
 	BYTE			*keypasswordBytes = NULL;
