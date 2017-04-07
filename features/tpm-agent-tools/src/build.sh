@@ -1,5 +1,5 @@
 #!/bin/bash
-export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmquote}
+export PREFIX=${PREFIX:-/opt/mtwilson/share/tpmagent}
 export OPENSSL=${OPENSSL:-/opt/mtwilson/share/openssl}
 export TROUSERS=${TROUSERS:-/opt/mtwilson/share/trousers}
 export LINUX_TARGET=${LINUX_TARGET:-generic}
