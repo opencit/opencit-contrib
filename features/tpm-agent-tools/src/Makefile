@@ -1,7 +1,7 @@
 # LDFLAGS = -L$PREFIX/lib
 # CFLAGS = -I$PREFIX/include
 CC=gcc
-CWDFLAGS=-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -z noexecstack -z relro -z now -pie
+CWDFLAGS=-fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -z noexecstack -z relro -z now -pie
 
 all: aikquote aikqverify getcert getcert01 extend_sha1
 

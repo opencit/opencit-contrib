@@ -5,7 +5,7 @@ TROUSERS="trousers-${TROUSERS_VERSION}"
 export PREFIX="${OPENSSL:-/opt/mtwilson/share/trousers}"
 export OPENSSL="${OPENSSL:-/opt/mtwilson/share/openssl}"
 export LINUX_TARGET="${LINUX_TARGET:-generic}"
-export CFLAGS="-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
+export CFLAGS="-fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security"
 export LDFLAGS="-z noexecstack -z relro -z now -pie"
 
 
