@@ -1,7 +1,7 @@
 # LDFLAGS = -L$PREFIX/lib
 # CFLAGS = -I$PREFIX/include
 # compiling the main class file NIARL_TPM_ModuleV2.cpp produces a lot of warnings
-CWDFLAGS=-fstack-protector -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -z noexecstack -z relro -z now -pie
+CWDFLAGS=-fstack-protector-strong -fPIE -fPIC -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -z noexecstack -z relro -z now -pie
 
 all: NIARL_TPM_Module
 
