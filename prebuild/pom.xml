@@ -3,7 +3,7 @@
     
     <groupId>com.intel.mtwilson.contrib</groupId>
     <artifactId>contrib-prebuild</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     
     <description>Downloads external artifacts and installs them into the local maven repository</description>
     <packaging>pom</packaging>

@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.intel.mtwilson</groupId>
         <artifactId>mtwilson-maven-build-contrib-features</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     
     <description>Builds tboot RPM or DEB binary depending on OS distribution</description>
