@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.intel.mtwilson.maven</groupId>
+    <artifactId>mtwilson-maven-package-zip</artifactId>
+    
+    <parent>
+        <groupId>com.intel.mtwilson</groupId>
+        <artifactId>mtwilson-maven-build-contrib-maven</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+    </parent>
+    
+    <packaging>pom</packaging>
+    <description>
+        Projects that inherit this pom and need to generate a zip file with all jars simply have to create target/content
+        during the build and it will be zipped
+    </description>
+    
+    <!--
+    The profile with activation.file.missing = ${basedir}/lock.mtwilson-maven-package-zip.txt causes
+    Maven to NOT try to create a zip file out of this parent pom itself.  The mentioned lock file is in
+    this project and will cause Maven to not run the maven-antrun-plugin. 
+    But for all projects that inherit from this POM as a parent POM,  they will not have the lock file
+    and a zip file will be generated for them.
+    -->
+    
+    <profiles>
+        <profile>
+            <activation>
+                <file>
+                    <missing>${basedir}/lock.mtwilson-maven-package-zip.txt</missing>
+                </file>
+            </activation>
+            
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-cli</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}.zip">
+                                            <fileset dir="${project.build.directory}/content" />
+                                        </zip>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant</artifactId>
+                                <version>1.8.4</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>ant-contrib</groupId>
+                                <artifactId>ant-contrib</artifactId>
+                                <version>1.0b3</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>                      
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
+                                            <type>zip</type>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    
+</project>

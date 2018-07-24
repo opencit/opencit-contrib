@@ -1,0 +1,140 @@
+tboot (1.9.5-0ubuntu1) yakkety; urgency=medium
+
+  * Add 2nd generation of LCP creation tool source codes for TPM 2.0
+    platforms.
+  * Add user guide for 2nd generation LCP creation tool
+  * Provide workaround for Intel PTT(Platform Trust Technology) & Linux
+    PTT driver.
+  * Add new fields in Linux kernel header struct to accommodate Linux
+    kernel new capabilities.
+  * Fix a pointer dereference regression in the tboot native Linux loader
+    which manifests itself as a system reset.
+  * Fix the issue of overwriting tboot when the loaded elf kernel is
+    located below tboot.
+  * Add support to release TPM localities when tboot exits to linux
+    kernel.
+  * Fix the evtlog dump function for tpm2 case.
+  * Initiaize kernel header comdline buffer before copying kernel cmdline
+    arguments to the buffer to avoid random 
+  * data at end of the original cmdline contents.
+  * Move tpm_detect() to an earlier stage so as to get tpm interface
+    initialized before checking TXT platform capabilities.
+
+ -- Ning Sun <ning.sun@intel.com>  Fri, 16 Dec 2016 12:14:29 -0400
+
+tboot (1.9.4-0ubuntu1) yakkety; urgency=medium
+
+  * Update to 1.9.4
+    - LP: #1591805    
+
+ -- Robert Hooker <sarvatt@ubuntu.com>  Thu, 08 Sep 2016 15:02:14 -0400
+
+tboot (1.8.3-0ubuntu1) wily; urgency=medium
+
+  * Update to 1.8.3
+    http://sourceforge.net/projects/tboot/
+    -LP: #1460918
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Mon, 03 Aug 2015 08:53:38 -0600
+
+tboot (1.8.2-0ubuntu1) utopic; urgency=medium
+
+  * Security Fix: TBOOT Argument Measurement Vulnerability for GRUB2 + ELF Kernels
+  * fix werror in 32 bit build environment
+    -LP: #1350140
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Wed, 30 Jul 2014 07:47:02 -0600
+
+tboot (1.8.1-0ubuntu2) utopic; urgency=medium
+
+  * Restore fix-werror-format.patch for i386 
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Tue, 10 Jun 2014 10:59:07 -0600
+
+tboot (1.8.1-0ubuntu1) utopic; urgency=medium
+
+  * Update to 1.8.1
+    -LP: #1327981
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Tue, 10 Jun 2014 07:09:03 -0600
+
+tboot (1.8.0-0ubuntu1) trusty; urgency=low
+
+  * Update to 1.8.0
+    -LP: #1256151
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Fri, 07 Feb 2014 07:17:34 -0700
+
+tboot (1.7.4-0ubuntu1) saucy; urgency=low
+
+  * Update to 1.7.4
+    Dropped patches/version-1-3.patch as it was no longer needed.
+    -LP: #1228768
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Mon, 23 Sep 2013 09:29:57 -0600
+
+tboot (1.7.3-0ubuntu2) saucy; urgency=low
+
+  * Update version number in the tboot grub-mkconfig helper scripts 
+    (LP: #1144231)
+
+ -- Andreas Moog <amoog@ubuntu.com>  Thu, 08 Aug 2013 22:38:52 +0200
+
+tboot (1.7.3-0ubuntu1) raring; urgency=low
+
+  * Missed adding the version string update
+    debian/patches/version-1-3.patch
+    LP: #1100152
+    Thanks to Gang Wei (gang-wei)
+      https://bugs.launchpad.net/intel/+bug/1100152/comments/2
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Wed, 20 Feb 2013 07:55:45 -0700
+
+tboot (1.7.3-0ubuntu0) raring; urgency=low
+
+  * Upstream release 1.7.3
+    Dropped all patches except fix-werror-format.patch
+    LP: #1100152
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Wed, 16 Jan 2013 05:45:44 -0700
+
+tboot (1.7.1-0ubuntu3) quantal; urgency=low
+
+  * Cherry-pick a patch from upstream to fix build failure with new zlib.
+
+ -- Ilya Barygin <randomaction@ubuntu.com>  Sat, 06 Oct 2012 14:47:42 +0400
+
+tboot (1.7.1-0ubuntu2) quantal; urgency=low
+
+  * Fix FTBFS, -Werror=format.
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Wed, 20 Jun 2012 11:31:08 +1000
+
+tboot (1.7.1-0ubuntu1) quantal; urgency=low
+
+  * New upstream release.
+
+ -- Logan Rosen <logatronico@gmail.com>  Mon, 18 Jun 2012 15:32:40 -0400
+
+tboot (1.7.0-0ubuntu1) precise; urgency=low
+
+  [ Gang Wei ]
+  * New upstream release (LP: #919040).
+  * debian/patches/grub-helper.patch: Add grub-mkconfig helper
+    scripts. 
+
+  [ James Page ]
+  * Refreshed/documented patches for new upstream release.
+  * d/copyright: Updated with Copyright and License for grub-mkconfig
+    helper scripts.
+  * d/control: Bumped Standards-Version to 3.9.3.
+  * d/tboot.[postinst|postrm]: Tweaked to include debhelper marker.
+
+ -- Gang Wei <gang.wei@intel.com>  Fri, 24 Feb 2012 16:48:44 +0800
+
+tboot (1.6-0ubuntu1) oneiric; urgency=low
+
+  * Initial release (LP: #815752)
+
+ -- Gang Wei <gang.wei@intel.com>  Thu, 28 Jul 2011 18:27:53 +0800
+

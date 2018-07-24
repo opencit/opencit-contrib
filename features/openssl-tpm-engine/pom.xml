@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.sourceforge.trousers</groupId>
+  <artifactId>openssl-tpm-engine-dist</artifactId>
+			<version>0.4.2</version>
+    <packaging>pom</packaging>
+
+<parent>
+    <groupId>com.intel.mtwilson.maven</groupId>
+    <artifactId>mtwilson-maven-build-sh-zip</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <relativePath/>
+</parent>	
+
+<dependencies>
+
+        <dependency>
+            <groupId>net.sourceforge.trousers</groupId>
+            <artifactId>openssl-tpm-engine</artifactId>
+			<version>0.4.2</version>
+			<type>tgz</type>
+			<classifier>sources</classifier>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.sourceforge.trousers</groupId>
+            <artifactId>trousers-dist</artifactId>
+			<version>0.3.13</version>
+			<type>zip</type>
+			<classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openssl</groupId>
+            <artifactId>openssl-dist</artifactId>
+			<version>1.0.2a</version>
+			<type>zip</type>
+			<classifier>${env.LINUX_TARGET}</classifier>
+        </dependency>
+
+</dependencies>
+	
+	</project>
