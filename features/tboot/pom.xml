@@ -77,13 +77,6 @@
     </build>
     
     <dependencies>
-        <dependency>
-            <groupId>net.sourceforge.tboot</groupId>
-            <artifactId>tboot</artifactId>
-            <version>1.9.5</version>
-            <classifier>sources</classifier>
-            <type>tgz</type>
-        </dependency>
     </dependencies>
     
     <profiles>
